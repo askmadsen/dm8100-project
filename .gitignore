@@ -1,5 +1,6 @@
-# Target directory
+# Target and object directory
 target
+obj
 
 # Prerequisites
 *.d
