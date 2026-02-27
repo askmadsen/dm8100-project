@@ -8,11 +8,13 @@ all: target/serial
 target/serial: $(OBJS)
 	gcc $(OBJS) -o $@
 	
-obj/%.o: src/%.c | dirs
+obj/%.o: src/%.c | obj target
 	gcc $(FLAGS) -c $< -o $@
 
-dirs:
+obj:
 	mkdir obj
+
+target:
 	mkdir target
 
 clean: 
