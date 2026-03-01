@@ -1,7 +1,10 @@
 #include "matrix.h"
+
 #include <stdio.h>
 #include <stddef.h>
 #include <math.h>
+#include <omp.h>
+#include <stdlib.h>
 
 void matrix_display(Matrix m) {
     for (size_t i = 0; i < m.rows; i++) {
@@ -21,4 +24,25 @@ double matrix_frobenius_norm(Matrix m, Matrix n) {
         }
     }
     return sqrt(sum);
+}
+
+Matrix create_matrix(size_t rows, size_t cols, int scale) {
+    DATA* data = malloc(rows * cols * sizeof(DATA));
+
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            data[i * cols + j] = i * scale + j;
+        }
+    }
+
+    return matrix_new(data, rows, cols);
+}
+
+Matrix create_zeros_matrix(size_t rows, size_t cols) {
+    DATA* data = calloc(rows * cols, sizeof(DATA));
+    return matrix_new(data, rows, cols);
+}
+
+void free_matrix(Matrix m) {
+    free(m.ptr);
 }
