@@ -6,8 +6,8 @@ OBJS := $(SRCS:src/%.c=obj/%.o)
 all: target/serial
 
 target/serial: $(OBJS)
-	gcc $(OBJS) -o $@
-	
+	gcc $(OBJS) -lm -fopenmp -o $@
+
 obj/%.o: src/%.c | obj target
 	gcc $(FLAGS) -c $< -o $@
 
@@ -17,7 +17,7 @@ obj:
 target:
 	mkdir target
 
-clean: 
+clean:
 	rm -rf obj
 	rm -rf target
 

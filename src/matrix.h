@@ -19,3 +19,5 @@ static inline DATA* matrix_index(Matrix m, size_t i, size_t j) {
 }
 
 void matrix_display(Matrix m);
+
+double matrix_frobenius_norm(Matrix m, Matrix n);
