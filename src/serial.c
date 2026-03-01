@@ -51,12 +51,15 @@ int main() {
     matrix_multiply_serial(new_a, new_b, new_c_serial);
     double end = omp_get_wtime();
     printf("Time taken for serial multiplication of large matrices: %f seconds\n", end - start);
+
     start = omp_get_wtime();
     matrix_multiply_openmp(new_a, new_b, new_c_openmp);
     end = omp_get_wtime();
     printf("Time taken for openmp multiplication of large matrices: %f seconds\n", end - start);
+    
     frobenius_norm = matrix_frobenius_norm(new_c_serial, new_c_openmp);
     printf("Frobenius norm of the difference between serial and openmp results for large matrices: %f\n", frobenius_norm);
+
     free_matrix(new_a);
     free_matrix(new_b);
     free_matrix(new_c_serial);
