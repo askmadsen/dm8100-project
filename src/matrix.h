@@ -21,3 +21,9 @@ static inline DATA* matrix_index(Matrix m, size_t i, size_t j) {
 void matrix_display(Matrix m);
 
 double matrix_frobenius_norm(Matrix m, Matrix n);
+
+Matrix create_matrix(size_t rows, size_t cols, int scale);
+
+Matrix create_zeros_matrix(size_t rows, size_t cols);
+
+void free_matrix(Matrix m);

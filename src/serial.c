@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <omp.h>
 
 void matrix_multiply_serial(Matrix a, Matrix b, Matrix c);
 
@@ -40,6 +41,26 @@ int main() {
 
     double frobenius_norm = matrix_frobenius_norm(c_serial, c_openmp);
     printf("Frobenius norm of the difference between serial and openmp results: %f\n", frobenius_norm);
+
+    Matrix new_a = create_matrix(1024, 1024, 2);
+    Matrix new_b = create_matrix(1024, 1024, 5);
+    Matrix new_c_serial = create_zeros_matrix(1024, 1024);
+    Matrix new_c_openmp = create_zeros_matrix(1024, 1024);
+
+    double start = omp_get_wtime();
+    matrix_multiply_serial(new_a, new_b, new_c_serial);
+    double end = omp_get_wtime();
+    printf("Time taken for serial multiplication of large matrices: %f seconds\n", end - start);
+    start = omp_get_wtime();
+    matrix_multiply_openmp(new_a, new_b, new_c_openmp);
+    end = omp_get_wtime();
+    printf("Time taken for openmp multiplication of large matrices: %f seconds\n", end - start);
+    frobenius_norm = matrix_frobenius_norm(new_c_serial, new_c_openmp);
+    printf("Frobenius norm of the difference between serial and openmp results for large matrices: %f\n", frobenius_norm);
+    free_matrix(new_a);
+    free_matrix(new_b);
+    free_matrix(new_c_serial);
+    free_matrix(new_c_openmp);
 }
 
 void matrix_multiply_serial(Matrix a, Matrix b, Matrix c) {
