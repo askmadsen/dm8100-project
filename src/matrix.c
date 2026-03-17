@@ -26,6 +26,16 @@ double matrix_frobenius_norm(Matrix m, Matrix n) {
     return sqrt(sum);
 }
 
+void matrix_transpose(Matrix m) {
+    for (size_t i = 0; i < m.rows; i++) {
+        for (size_t j = i + 1; j < m.cols; j++) {
+            DATA temp = *matrix_index(m, i, j);
+            *matrix_index(m, i, j) = *matrix_index(m, j, i);
+            *matrix_index(m, j, i) = temp;
+        }
+    }
+}
+
 Matrix create_matrix(size_t rows, size_t cols, int scale) {
     DATA* data = malloc(rows * cols * sizeof(DATA));
 
