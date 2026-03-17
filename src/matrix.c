@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <stddef.h>
-#include <math.h>
 #include <omp.h>
 #include <stdlib.h>
 
@@ -23,7 +22,7 @@ double matrix_frobenius_norm(Matrix m, Matrix n) {
             sum += diff * diff;
         }
     }
-    return sqrt(sum);
+    return sum;
 }
 
 void matrix_transpose(Matrix m) {
