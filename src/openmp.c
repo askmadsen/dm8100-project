@@ -2,7 +2,7 @@
 
 #include <omp.h>
 
-void matrix_multiply_openmp(Matrix a, Matrix b, Matrix c) {
+void matmul_openmp(Matrix a, Matrix b, Matrix c) {
     #pragma omp parallel for collapse(2)
     for (size_t i = 0; i < c.rows; i++) {
         for (size_t j = 0; j < c.cols; j++) {

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <math.h>
 
 void matrix_display(Matrix m) {
     for (size_t i = 0; i < m.rows; i++) {
@@ -21,7 +22,7 @@ double matrix_frobenius_norm(Matrix m, Matrix n) {
             sum += diff * diff;
         }
     }
-    return sum;
+    return sqrt(sum);
 }
 
 void matrix_transpose(Matrix m) {
@@ -34,7 +35,7 @@ void matrix_transpose(Matrix m) {
     }
 }
 
-Matrix create_matrix(size_t rows, size_t cols, int scale) {
+Matrix matrix_create(size_t rows, size_t cols, int scale) {
     DATA* data = malloc(rows * cols * sizeof(DATA));
 
     for (size_t i = 0; i < rows; i++) {
@@ -46,11 +47,11 @@ Matrix create_matrix(size_t rows, size_t cols, int scale) {
     return matrix_new(data, rows, cols);
 }
 
-Matrix create_zeros_matrix(size_t rows, size_t cols) {
+Matrix matrix_create_zeros(size_t rows, size_t cols) {
     DATA* data = calloc(rows * cols, sizeof(DATA));
     return matrix_new(data, rows, cols);
 }
 
-void free_matrix(Matrix m) {
+void matrix_free(Matrix m) {
     free(m.ptr);
 }

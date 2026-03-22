@@ -34,9 +34,9 @@ int main(int argc, char** argv) {
 
     if (rank == 0) {
         d = 512;
-        a = create_matrix(d, d, 7);
-        b = create_matrix(d, d, 42);
-        c = create_zeros_matrix(d, d);
+        a = matrix_create(d, d, 7);
+        b = matrix_create(d, d, 42);
+        c = matrix_create_zeros(d, d);
         matrix_transpose(b);
     }
 
@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
 
         for (int chunk_index = 0; chunk_index < chunk_count; chunk_index++) {
             float buffer[CHUNK_ENTRIES];
-            
+
             MPI_Status status;
             MPI_Recv(buffer, CHUNK_ENTRIES, MPI_FLOAT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status);
             int recv_rank = status.MPI_SOURCE;
@@ -103,29 +103,29 @@ int main(int argc, char** argv) {
                 break;
             }
 
-            a = create_zeros_matrix(chunk_size[0], d);
+            a = matrix_create_zeros(chunk_size[0], d);
             MPI_Recv(a.ptr, chunk_size[0] * d, MPI_FLOAT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            b = create_zeros_matrix(chunk_size[1], d);
+            b = matrix_create_zeros(chunk_size[1], d);
             MPI_Recv(b.ptr, chunk_size[1] * d, MPI_FLOAT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            c = create_zeros_matrix(chunk_size[0], chunk_size[1]);
+            c = matrix_create_zeros(chunk_size[0], chunk_size[1]);
 
-            matrix_multiply_transposed_serial(a, b, c);
+            matmul_transposed(a, b, c);
 
             MPI_Send(c.ptr, c.rows * c.cols, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
 
-            free_matrix(a);
-            free_matrix(b);
-            free_matrix(c);
+            matrix_free(a);
+            matrix_free(b);
+            matrix_free(c);
         }
     }
 
     if (rank == 0) {
         free(process_chunks);
-        free_matrix(a);
-        free_matrix(b);
-        free_matrix(c);
+        matrix_free(a);
+        matrix_free(b);
+        matrix_free(c);
     }
-    
+
     MPI_Finalize();
 }
 
