@@ -1,24 +1,40 @@
-FLAGS := -Wall -Wextra -fopenmp
+CC       := gcc
+MPICC    := mpicc
+FLAGS    := -Wall -Wextra -O2
+OMPFLAGS := -fopenmp
 
-SRCS := $(wildcard src/*.c)
-OBJS := $(SRCS:src/%.c=obj/%.o)
+all: target/main_serial target/main_openmp target/openmpi | target
 
-all: target/serial
+# Executables
+target/main_serial: obj/main_serial.o obj/matrix.o obj/serial.o | target
+	$(CC) $^ -lm -o $@
 
-target/serial: $(OBJS)
-	gcc $(OBJS) -lm -fopenmp -o $@
+target/main_openmp: obj/main_openmp.o obj/matrix.o obj/openmp.o | target
+	$(CC) $^ -lm $(OMPFLAGS) -o $@
 
-obj/%.o: src/%.c | obj target
-	gcc $(FLAGS) -c $< -o $@
+target/openmpi: obj/openmpi.o obj/matrix.o obj/serial.o | target
+	$(MPICC) $^ -lm -o $@
+
+# Object files
+obj/openmp.o: src/openmp.c | obj
+	$(CC) $(FLAGS) $(OMPFLAGS) -c $< -o $@
+
+obj/main_openmp.o: src/main_openmp.c | obj
+	$(CC) $(FLAGS) $(OMPFLAGS) -c $< -o $@
+
+obj/openmpi.o: src/openmpi.c | obj
+	$(MPICC) $(FLAGS) -c $< -o $@
+
+obj/%.o: src/%.c | obj
+	$(CC) $(FLAGS) -c $< -o $@
 
 obj:
-	mkdir obj
+	mkdir -p obj
 
 target:
-	mkdir target
+	mkdir -p target
 
 clean:
-	rm -rf obj
-	rm -rf target
+	rm -rf obj target
 
 .PHONY: all clean

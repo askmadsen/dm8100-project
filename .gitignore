@@ -2,6 +2,9 @@
 target
 obj
 
+# Results constantly change, don't include in commits
+results
+
 # Prerequisites
 *.d
 

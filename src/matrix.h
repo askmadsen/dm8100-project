@@ -24,8 +24,8 @@ double matrix_frobenius_norm(Matrix m, Matrix n);
 
 void matrix_transpose(Matrix m);
 
-Matrix create_matrix(size_t rows, size_t cols, int scale);
+Matrix matrix_create(size_t rows, size_t cols, int scale);
 
-Matrix create_zeros_matrix(size_t rows, size_t cols);
+Matrix matrix_create_zeros(size_t rows, size_t cols);
 
-void free_matrix(Matrix m);
+void matrix_free(Matrix m);
