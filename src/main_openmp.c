@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 
     Matrix a = matrix_create(dim, dim, scale);
     Matrix b = matrix_create(dim, dim, scale * 7);
+    matrix_transpose(b);
     Matrix c = matrix_create_zeros(dim, dim);
 
     clock_gettime(CLOCK_MONOTONIC, &start);
