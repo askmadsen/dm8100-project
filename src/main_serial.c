@@ -18,10 +18,11 @@ int main(int argc, char **argv) {
 
     Matrix a = matrix_create(dim, dim, scale);
     Matrix b = matrix_create(dim, dim, scale * 7);
+    matrix_transpose(b);
     Matrix c = matrix_create_zeros(dim, dim);
 
     clock_gettime(CLOCK_MONOTONIC, &start);
-    matmul(a, b, c);
+    matmul_transposed(a, b, c);
     clock_gettime(CLOCK_MONOTONIC, &end);
 
     double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
