@@ -1,7 +1,6 @@
 #include <cuda_runtime.h>
 #include <stdio.h>
 
-#include "cuda.h"
 #include "matrix.h"
 
 __global__ void matmul_cuda_transposed(Matrix a, Matrix bT, Matrix c) {
@@ -16,7 +15,7 @@ __global__ void matmul_cuda_transposed(Matrix a, Matrix bT, Matrix c) {
         for (int k = 0; k < a.cols; k++) {
             float* a_ptr = a.ptr + i * a.cols + k;
             float* b_ptr = bT.ptr + j * bT.cols + k;
-            *c_ptr += *a_ptr + *b_ptr;
+            *c_ptr += *a_ptr * *b_ptr;
         }
 
         printf("%d %d %d %f\n", workIndex, i, j, *c_ptr);
