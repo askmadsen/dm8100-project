@@ -1,5 +1,6 @@
 CC       := gcc
 MPICC    := mpicc
+NVCC 	 := nvcc
 FLAGS    := -Wall -Wextra -O2
 OMPFLAGS := -fopenmp
 
@@ -18,6 +19,9 @@ target/main_correctness: obj/main_correctness.o obj/matrix.o obj/serial.o obj/op
 target/openmpi: obj/openmpi.o obj/matrix.o obj/serial.o | target
 	$(MPICC) $^ -lm -o $@
 
+target/main_cuda: obj/matrix.o | target
+	$(NVCC) $^ -lm -o $@
+
 # Object files
 obj/openmp.o: src/openmp.c | obj
 	$(CC) $(FLAGS) $(OMPFLAGS) -c $< -o $@
@@ -31,8 +35,14 @@ obj/main_correctness.o: src/main_correctness.c | obj
 obj/openmpi.o: src/openmpi.c | obj
 	$(MPICC) $(FLAGS) -c $< -o $@
 
+obj/main_cuda.o: src/main_cuda.cu | obj
+	$(NVCC) $(FLAGS) -c $< -o $@
+
 obj/%.o: src/%.c | obj
 	$(CC) $(FLAGS) -c $< -o $@
+
+obj/%.o: src/%.cu | obj
+	$(NVCC) $(FLAGS) -c $< -o $@
 
 obj:
 	mkdir -p obj
