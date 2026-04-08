@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stddef.h>
 
 typedef float DATA;
@@ -24,8 +28,14 @@ double matrix_frobenius_norm(Matrix m, Matrix n);
 
 void matrix_transpose(Matrix m);
 
-Matrix matrix_create(size_t rows, size_t cols, int scale);
+Matrix matrix_calloc(size_t rows, size_t cols);
 
-Matrix matrix_create_zeros(size_t rows, size_t cols);
+void matrix_fill(Matrix m, int scale);
+
+Matrix matrix_filled(size_t rows, size_t cols, int scale);
 
 void matrix_free(Matrix m);
+
+#ifdef __cplusplus
+}
+#endif

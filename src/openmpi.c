@@ -34,9 +34,9 @@ int main(int argc, char** argv) {
 
     if (rank == 0) {
         d = 512;
-        a = matrix_create(d, d, 7);
-        b = matrix_create(d, d, 42);
-        c = matrix_create_zeros(d, d);
+        a = matrix_filled(d, d, 7);
+        b = matrix_filled(d, d, 42);
+        c = matrix_calloc(d, d);
         matrix_transpose(b);
     }
 
@@ -103,11 +103,11 @@ int main(int argc, char** argv) {
                 break;
             }
 
-            a = matrix_create_zeros(chunk_size[0], d);
+            a = matrix_calloc(chunk_size[0], d);
             MPI_Recv(a.ptr, chunk_size[0] * d, MPI_FLOAT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            b = matrix_create_zeros(chunk_size[1], d);
+            b = matrix_calloc(chunk_size[1], d);
             MPI_Recv(b.ptr, chunk_size[1] * d, MPI_FLOAT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            c = matrix_create_zeros(chunk_size[0], chunk_size[1]);
+            c = matrix_calloc(chunk_size[0], chunk_size[1]);
 
             matmul_transposed(a, b, c);
 

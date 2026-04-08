@@ -5,13 +5,11 @@
 
 int main () {
 
-    int dim = 64;
-
+    int dim = 4;
 
     float* a_ptr;
     float* b_ptr;
     float* c_ptr;
-
 
     float* a_dev_ptr;
     float* b_dev_ptr;
@@ -38,17 +36,22 @@ int main () {
 
     matrix_transpose(b);
 
-    cudaMemcpy(a_dev.data, a.data, dim*dim*sizeof(float), cudaMemcpyDefault);
-    cudaMemcpy(b_dev.data, b.data, dim*dim*sizeof(float), cudaMemcpyDefault);
-    cudaMemset(c_dev.data, 0, dim*dim*sizeof(float));
+    cudaMemcpy(a_dev.ptr, a.ptr, dim*dim*sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(b_dev.ptr, b.ptr, dim*dim*sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemset(c_dev.ptr, 0, dim*dim*sizeof(float));
 
-    matmul_cuda_transposed<<<64, 64>>>(a_dev, b_dev, c_dev);
+    matmul_cuda_transposed<<<dim, dim>>>(a_dev, b_dev, c_dev);
 
     cudaDeviceSynchronize();
 
-    cudaMemcpy(c.data, c_dev.data, dim*dim*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(c.ptr, c_dev.ptr, dim*dim*sizeof(float), cudaMemcpyDeviceToHost);
 
+    cudaError_t error = cudaGetLastError();
+    const char* error_str = cudaGetErrorString(error);
+    printf("%s\n", error_str);
 
+    matrix_display(a);
+    matrix_display(b);
     matrix_display(c);
 
 

@@ -22,11 +22,11 @@ int main(int argc, char **argv) {
 
     omp_set_num_threads(threads);
 
-    Matrix a = matrix_create(dim, dim, scale);
-    Matrix b = matrix_create(dim, dim, scale * 7);
+    Matrix a = matrix_filled(dim, dim, scale);
+    Matrix b = matrix_filled(dim, dim, scale * 7);
     matrix_transpose(b);
-    Matrix c_ref = matrix_create_zeros(dim, dim);
-    Matrix c_test = matrix_create_zeros(dim, dim);
+    Matrix c_ref = matrix_calloc(dim, dim);
+    Matrix c_test = matrix_calloc(dim, dim);
 
     matmul_transposed(a, b, c_ref);
 

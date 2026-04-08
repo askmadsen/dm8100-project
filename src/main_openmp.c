@@ -20,10 +20,10 @@ int main(int argc, char **argv) {
 
     struct timespec start, end;
 
-    Matrix a = matrix_create(dim, dim, scale);
-    Matrix b = matrix_create(dim, dim, scale * 7);
+    Matrix a = matrix_filled(dim, dim, scale);
+    Matrix b = matrix_filled(dim, dim, scale * 7);
     matrix_transpose(b);
-    Matrix c = matrix_create_zeros(dim, dim);
+    Matrix c = matrix_calloc(dim, dim);
 
     clock_gettime(CLOCK_MONOTONIC, &start);
     matmul_openmp_transposed(a, b, c);
