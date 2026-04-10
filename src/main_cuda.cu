@@ -92,6 +92,7 @@ int main(int argc, char** argv) {
     if (dest != NULL) {
         FILE* file = fopen(dest, "w");
         matrix_save(c, file);
+        fclose(file);
     }
 
     cudaError_t error = cudaGetLastError();
