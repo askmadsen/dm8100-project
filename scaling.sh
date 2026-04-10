@@ -6,7 +6,6 @@
 # Output: results/strong_scaling.csv and results/weak_scaling.csv
 # =============================================================================
 
-SCALE=42
 DIMS=(512 1024)         # Matrix dimensions for strong scaling
 THREADS=(1 2 4 8)       # Thread counts to test
 CORES=(2 4 8)           # Number of MPI processes
@@ -48,7 +47,7 @@ echo "--- Serial baseline ---"
 printf "  %-8s | %-12s\n" "dim" "time (s)"
 printf "  %-8s | %-12s\n" "--------" "------------"
 for dim in "${DIMS[@]}"; do
-    avg=$(average_time "./target/main_serial $dim $SCALE")
+    avg=$(average_time "./target/main_serial $dim")
     echo "serial,$dim,1,$avg,1.000000" >> $STRONG_OUTPUT
     printf "  %-8s | %-12s\n" "$dim" "${avg}s"
 done
@@ -60,7 +59,7 @@ printf "  %-8s | %-10s | %-12s | %-10s\n" "--------" "----------" "------------"
 for dim in "${DIMS[@]}"; do
     serial_time=$(grep "^serial,$dim," $STRONG_OUTPUT | cut -d',' -f4)
     for threads in "${THREADS[@]}"; do
-        avg=$(average_time "./target/main_openmp $dim $SCALE $threads")
+        avg=$(average_time "./target/main_openmp $dim $threads")
         speedup=$(awk "BEGIN {printf \"%.6f\", $serial_time / $avg}")
         echo "openmp,$dim,$threads,$avg,$speedup" >> $STRONG_OUTPUT
         printf "  %-8s | %-10s | %-12s | %-10s\n" "$dim" "$threads" "${avg}s" "${speedup}x"
@@ -89,7 +88,7 @@ printf "  %-8s | %-10s | %-12s\n" "dim" "threads" "time (s)"
 printf "  %-8s | %-10s | %-12s\n" "--------" "----------" "------------"
 for threads in "${THREADS[@]}"; do
     dim=$(awk "BEGIN {printf \"%d\", $BASE_DIM * ($threads ^ (1.0/3.0))}")
-    avg=$(average_time "./target/main_openmp $dim $SCALE $threads")
+    avg=$(average_time "./target/main_openmp $dim $threads")
     echo "openmp_weak,$dim,$threads,$avg" >> $WEAK_OUTPUT
     printf "  %-8s | %-10s | %-12s\n" "$dim" "$threads" "${avg}s"
 done
