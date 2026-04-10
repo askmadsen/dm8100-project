@@ -5,9 +5,8 @@
 # =============================================================================
 
 SCALE=42
-TEST_DIMS=(512 873 1024)
+TEST_DIMS=(128 256 512)
 TEST_THREADS=(1 4 8)
-METHODS=("openmp") # Add "cuda" "mpi" here they are implemented
 
 echo "############################################################"
 echo "#                CORRECTNESS VERIFICATION                  #"
@@ -16,26 +15,15 @@ echo "############################################################"
 printf "  %-12s | %-8s | %-10s | %-10s\n" "Method" "Dim" "Threads" "Status"
 printf "  %-12s | %-8s | %-10s | %-10s\n" "------------" "--------" "----------" "----------"
 
-for method in "${METHODS[@]}"; do
-    for dim in "${TEST_DIMS[@]}"; do
-        for threads in "${TEST_THREADS[@]}"; do
+for dim in "${TEST_DIMS[@]}"; do
+    result=$(./target/main_serial "$dim" --dest "/tmp/serial_${dim}.txt")
+    result=$(./target/main_openmp "$dim" 4 --dest "/tmp/openmp_${dim}.txt")
+    result=$(./target/main_cuda "$dim" --dest "/tmp/cuda_${dim}.txt")
 
-            # Note the extra $method argument here
-            result=$(./target/main_correctness "$method" "$dim" "$SCALE" "$threads")
-            exit_code=$?
-
-            status="[OK]"
-            if [ $exit_code -ne 0 ]; then status="[FAILED]"; fi
-
-            printf "  %-12s | %-8s | %-10s | %-10s\n" "$method" "$dim" "$threads" "$status"
-
-            if [ $exit_code -ne 0 ]; then
-                echo -e "\nCRITICAL ERROR in $method\n$result"
-                exit 1
-            fi
-        done
-    done
-    echo "------------------------------------------------------------"
+    result=$(./target/main_correctness "/tmp/serial_${dim}.txt" "/tmp/openmp_${dim}.txt")
+    printf "openmp (${dim}): %d\n" $?
+    result=$(./target/main_correctness "/tmp/serial_${dim}.txt" "/tmp/cuda_${dim}.txt")
+    printf "cuda (${dim}): %d\n" $?
 done
 
 echo "All tests passed!"

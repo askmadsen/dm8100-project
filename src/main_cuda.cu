@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
     cudaMemset(c_dev.ptr, 0, dim*dim*sizeof(float));
 
     int blocks = dim * dim / 1024 + 1;
-    int threads = dim < 1024 ? dim : 1024;
+    int threads = dim * dim < 1024 ? dim * dim : 1024;
 
     matmul_cuda_transposed<<<blocks, threads>>>(a_dev, b_dev, c_dev);
 
