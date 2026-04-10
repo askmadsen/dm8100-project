@@ -57,3 +57,28 @@ Matrix matrix_filled(size_t rows, size_t cols, int scale) {
 void matrix_free(Matrix m) {
     free(m.ptr);
 }
+
+int matrix_save(Matrix m, FILE* file) {
+    fprintf(file, "%ld;", m.rows);
+    fprintf(file, "%ld;", m.cols);
+    for (size_t i = 0; i < m.rows; i++) {
+        for (size_t j = 0; j < m.cols; j++) {
+            fprintf(file, "%f;", *matrix_index(m, i, j));
+        }
+    }
+    return 0;
+}
+
+int matrix_load(Matrix* m, FILE* file) {
+    size_t rows;
+    size_t cols;
+    fscanf(file, "%ld;", &rows);  
+    fscanf(file, "%ld;", &cols);
+    *m = matrix_calloc(rows, cols);
+    for (size_t i = 0; i < m->rows; i++) {
+        for (size_t j = 0; j < m->cols; j++) {
+            fscanf(file, "%f;", matrix_index(*m, i, j));
+        }
+    }
+    return 0;
+}

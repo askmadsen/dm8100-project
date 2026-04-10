@@ -5,6 +5,7 @@ extern "C" {
 #endif
 
 #include <stddef.h>
+#include <stdio.h>
 
 typedef float DATA;
 
@@ -35,6 +36,10 @@ void matrix_fill(Matrix m, int scale);
 Matrix matrix_filled(size_t rows, size_t cols, int scale);
 
 void matrix_free(Matrix m);
+
+int matrix_save(Matrix m, FILE* file);
+
+int matrix_load(Matrix* m, FILE* file);
 
 #ifdef __cplusplus
 }
