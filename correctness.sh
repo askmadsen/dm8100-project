@@ -12,8 +12,8 @@ echo "############################################################"
 echo "#                CORRECTNESS VERIFICATION                  #"
 echo "############################################################"
 
-printf "  %-12s | %-8s | %-10s | %-10s\n" "Method" "Dim" "Threads" "Status"
-printf "  %-12s | %-8s | %-10s | %-10s\n" "------------" "--------" "----------" "----------"
+printf "  %-12s | %-8s | %-10s" "Method" "Dim"  "Status"
+printf "  %-12s | %-8s | %-10s\n" "------------" "--------" "----------"
 
 for dim in "${TEST_DIMS[@]}"; do
     result=$(./target/main_serial "$dim" --dest "/tmp/serial_${dim}.txt")
@@ -21,9 +21,11 @@ for dim in "${TEST_DIMS[@]}"; do
     result=$(./target/main_cuda "$dim" --dest "/tmp/cuda_${dim}.txt")
 
     result=$(./target/main_correctness "/tmp/serial_${dim}.txt" "/tmp/openmp_${dim}.txt")
-    printf "openmp (${dim}): %d\n" $?
+    printf "  %-12s | %-8s | %-10s" "Openmp" "(${dim})" $?
+    #printf "openmp (${dim}): %d\n" $?
     result=$(./target/main_correctness "/tmp/serial_${dim}.txt" "/tmp/cuda_${dim}.txt")
-    printf "cuda (${dim}): %d\n" $?
+    printf "  %-12s | %-8s | %-10s" "Cuda" "(${dim})" $?
+    #printf "cuda (${dim}): %d\n" $?
 done
 
 echo "All tests passed!"
