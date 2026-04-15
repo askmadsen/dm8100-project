@@ -18,8 +18,8 @@ For CUDA files both Threads and Blocks are present; the x-axis uses Blocks and
 the thread count is shown in the axis label (it is held fixed).
 
 Usage:
-    python plot_scaling.py --input_dir results --output_dir plots
-    python plot_scaling.py --help
+    python plot.py --input_dir results --output_dir plots
+    python plot.py --help
 """
 
 import dataclasses
