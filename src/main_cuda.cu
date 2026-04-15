@@ -9,14 +9,17 @@
 #include "matrix.h"
 #include "cuda.h"
 
-int parse_args(int argc, char** argv, int* dim, char** dest) {
-    if (argc < 2) {
+int parse_args(int argc, char** argv, int* dim, int* threads, int* blocks, char** dest) {
+    if (argc < 4) {
         return -1;
     }
 
-    *dim = atoi(argv[1]);
+    *dim     = atoi(argv[1]);
+    *threads = atoi(argv[2]);
+    *blocks  = atoi(argv[3]);
 
-    int i = 2;
+
+    int i = 4;
     while (i < argc) {
         if (!strcmp(argv[i], "--dest")) {
             i++;
@@ -30,13 +33,15 @@ int parse_args(int argc, char** argv, int* dim, char** dest) {
     return 0;
 }
 
-// 
+//
 // --dest <PATH>
 // --output <MODE>
 int main(int argc, char** argv) {
     int dim;
+    int threads;
+    int blocks;
     char* dest = NULL;
-    parse_args(argc, argv, &dim, &dest);
+    parse_args(argc, argv, &dim, &threads, &blocks, &dest);
 
     float* a_ptr;
     float* b_ptr;
@@ -67,7 +72,6 @@ int main(int argc, char** argv) {
 
     struct timespec start, end;
 
-    clock_gettime(CLOCK_MONOTONIC, &start);
 
     matrix_transpose(b);
 
@@ -75,16 +79,21 @@ int main(int argc, char** argv) {
     cudaMemcpy(b_dev.ptr, b.ptr, dim*dim*sizeof(float), cudaMemcpyHostToDevice);
     cudaMemset(c_dev.ptr, 0, dim*dim*sizeof(float));
 
-    int blocks = dim * dim / 1024 + 1;
-    int threads = dim * dim < 1024 ? dim * dim : 1024;
+    //int blocks = dim * dim / 1024 + 1;
+    //int threads = dim * dim < 1024 ? dim * dim : 1024;
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
 
     matmul_cuda_transposed<<<blocks, threads>>>(a_dev, b_dev, c_dev);
 
     cudaDeviceSynchronize();
 
+    clock_gettime(CLOCK_MONOTONIC, &end);
+
+
     cudaMemcpy(c.ptr, c_dev.ptr, dim*dim*sizeof(float), cudaMemcpyDeviceToHost);
 
-    clock_gettime(CLOCK_MONOTONIC, &end);
 
     double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
     printf("%f\n", elapsed);
