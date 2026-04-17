@@ -43,16 +43,20 @@ class Config:
     """Configuration for the scaling plot generator.
 
     Attributes:
-        input_dir:  Directory containing the six scaling CSV files
+        sm_count (int): The streaming multiprocessor count for your GPU
+        max_threads (int): Max number of threads on your CPU
+        input_dir (Path):  Directory containing the six scaling CSV files
                     (strong/weak x openmp/mpi/cuda).
-        output_dir: Directory where the two output figures are saved.
+        output_dir (Path): Directory where the two output figures are saved.
     """
-
+    sm_count: int
+    max_threads: int
     input_dir: Path
-    """Directory containing the six scaling CSV files."""
-
     output_dir: Path = Path(".")
-    """Directory where strong_scaling.png and weak_scaling.png are saved."""
+
+
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -217,6 +221,7 @@ def plot_subplot(
     x_col: str,
     fixed_threads: int | None,
     law: str,
+    limit: int,
     title: str,
     y_label: str,
 ) -> None:
@@ -232,9 +237,11 @@ def plot_subplot(
         title:         Subplot title (e.g. ``"OpenMP"``).
         y_label:       Y-axis label string.
     """
-    s = fit_serial_fraction(N, speedup, law)
 
-    N_fine = np.linspace(N.min(), N.max(), 500)
+    idx = np.argmax(N > limit)
+    s = fit_serial_fraction(N[:idx], speedup[:idx], law)
+
+    N_fine = np.linspace(N.min(), N[idx - 1], 500)
     fn = amdahl if law == "amdahl" else gustafson
     fitted = fn(N_fine, s)
 
@@ -257,6 +264,7 @@ def build_figure(
     datasets: list[Dataset | None],
     subtitles: list[str],
     law: str,
+    config: Config,
     fig_title: str,
     y_label: str,
     out_path: Path,
@@ -287,7 +295,8 @@ def build_figure(
             ax.set_axis_off()
         else:
             N, speedup, x_col, fixed_threads = dataset
-            plot_subplot(ax, N, speedup, x_col, fixed_threads, law, subtitle, y_label)
+            limit = config.sm_count if subtitle == "CUDA" else config.max_threads
+            plot_subplot(ax, N, speedup, x_col, fixed_threads, law, limit, subtitle, y_label)
 
     fig.tight_layout()
     fig.savefig(out_path, dpi=150, bbox_inches="tight")
@@ -317,6 +326,7 @@ def main(cfg: Config) -> None:
         strong_data,
         subtitles,
         law="amdahl",
+        config = cfg,
         fig_title="Strong Scaling (Amdahl's Law)",
         y_label="Speedup",
         out_path=cfg.output_dir / "strong_scaling.png",
@@ -326,6 +336,7 @@ def main(cfg: Config) -> None:
         weak_data,
         subtitles,
         law="gustafson",
+        config = cfg,
         fig_title="Weak Scaling (Gustafson's Law)",
         y_label="Scaled Speedup",
         out_path=cfg.output_dir / "weak_scaling.png",

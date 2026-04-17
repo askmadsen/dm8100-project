@@ -4,7 +4,7 @@
 DIM_STRONG=2048                 # Fixed dimension for Strong Scaling
 BASE_DIM_WEAK=2048              # Base dimension for Weak Scaling (1 block)
 FIXED_THREADS=256               # Fixed GPU Thread number
-BLOCK_ARRAY=(1 2 4 8 12 16)     # Block counts to test
+BLOCK_ARRAY=(1 2 4 8 12 16 20 24 32)     # Block counts to test
 RUNS=3
 RESULTS_DIR="results"
 

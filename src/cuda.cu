@@ -21,11 +21,8 @@
 }*/
 
 __global__ void matmul_cuda_transposed(Matrix a, Matrix bT, Matrix c) {
-    // 1. Calculate the total number of threads in the whole grid
     int total_threads = blockDim.x * gridDim.x;
 
-    // 2. Start at this thread's unique global ID
-    // 3. Loop: jump by 'total_threads' until the whole matrix (rows * cols) is done
     for (int workIndex = threadIdx.x + blockDim.x * blockIdx.x;
          workIndex < a.rows * a.cols;
          workIndex += total_threads)
