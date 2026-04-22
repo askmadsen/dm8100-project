@@ -1,0 +1,15 @@
+TESTING WITH: ./target/openmp 2048 6  (matrix dim 2048, thread count 6)
+
+
+Using transposed matrix mult (ijk order): 0.95 seconds
+
+Using transposed matrix mult (ikj order) : 13.5 seconds
+
+Using normal matrix mult (ijk order): 9.77 seconds
+
+Using normal matrix mult (ikj order): 0.6 seconds
+
+
+Using normal matrix mult (ikj order) and different scheduler options made no difference
+
+Tried collaps with 1, 2 and 3 to no real effect. Collapse(1) behaved like using no collapse

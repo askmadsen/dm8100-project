@@ -39,11 +39,13 @@ int main(int argc, char **argv) {
 
     struct timespec start, end;
 
-    matrix_transpose(b);
+    //matrix_transpose(b);
 
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    matmul_openmp_transposed(a, b, c);
+    //matmul_openmp_transposed(a, b, c);
+
+    matmul_openmp(a, b, c);
 
     clock_gettime(CLOCK_MONOTONIC, &end);
 
