@@ -10,21 +10,30 @@
 #include "cuda.h"
 
 int parse_args(int argc, char** argv, int* dim, int* threads, int* blocks, char** dest) {
-    if (argc < 4) {
+    if (argc < 2) {
         return -1;
     }
 
-    *dim     = atoi(argv[1]);
-    *threads = atoi(argv[2]);
-    *blocks  = atoi(argv[3]);
+    *dim = atoi(argv[1]);
 
-
-    int i = 4;
+    int i = 2;
     while (i < argc) {
         if (!strcmp(argv[i], "--dest")) {
             i++;
             if (i < argc) {
                 *dest = argv[i];
+            }
+            i++;
+        } else if (!strcmp(argv[i], "--threads")) {
+            i++;
+            if (i < argc) {
+                *threads = atoi(argv[i]);
+            }
+            i++;
+        } else if (!strcmp(argv[i], "--blocks")) {
+            i++;
+            if (i < argc) {
+                *blocks = atoi(argv[i]);
             }
             i++;
         }
@@ -37,10 +46,25 @@ int parse_args(int argc, char** argv, int* dim, int* threads, int* blocks, char*
 // --dest <PATH>
 // --output <MODE>
 int main(int argc, char** argv) {
+    int device;
+    struct cudaDeviceProp prop;
+
+    cudaError_t err = cudaGetDevice(&device);
+    if (err != cudaSuccess) {
+        printf("Error getting device: %s\n", cudaGetErrorString(err));
+        return 1;
+    }
+
+    cudaGetDeviceProperties(&prop, device);
+
+    // printf("Max Threads per SM: %d\n", prop.maxThreadsPerMultiProcessor);
+
     int dim;
-    int threads;
-    int blocks;
+    int threads = 256;
+    int blocks = prop.multiProcessorCount;
     char* dest = NULL;
+
+
     parse_args(argc, argv, &dim, &threads, &blocks, &dest);
 
     float* a_ptr;

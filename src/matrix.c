@@ -63,7 +63,7 @@ int matrix_save(Matrix m, FILE* file) {
     fprintf(file, "%ld;", m.cols);
     for (size_t i = 0; i < m.rows; i++) {
         for (size_t j = 0; j < m.cols; j++) {
-            fprintf(file, "%d;", *matrix_index(m, i, j));
+            fprintf(file, "%f;", *matrix_index(m, i, j));
         }
     }
     return 0;
@@ -77,7 +77,7 @@ int matrix_load(Matrix* m, FILE* file) {
     *m = matrix_calloc(rows, cols);
     for (size_t i = 0; i < m->rows; i++) {
         for (size_t j = 0; j < m->cols; j++) {
-            fscanf(file, "%d;", matrix_index(*m, i, j));
+            fscanf(file, "%f;", matrix_index(*m, i, j));
         }
     }
     return 0;
