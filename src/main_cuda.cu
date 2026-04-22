@@ -9,35 +9,23 @@
 #include "matrix.h"
 #include "cuda.h"
 
+#define ARG_INIT() int i = 1;
+#define STR_ARG(var) if (argc >= i) { *var = argv[i++]; } else { return -1; }
+#define INT_ARG(var) if (argc >= i) { *var = atoi(argv[i++]); } else { return -1; }
+#define OPT_START() while (i < argc) {
+#define OPT_END() return -1; }
+#define OPT_STR_ARG(arg, var) if (!strcmp(argv[i], arg)) { i++; if (i < argc) { *var = argv[i]; } i++; } else
+#define OPT_INT_ARG(arg, var) if (!strcmp(argv[i], arg)) { i++; if (i < argc) { *var = atoi(argv[i]); } i++; } else
+
 int parse_args(int argc, char** argv, int* dim, int* threads, int* blocks, char** dest) {
-    if (argc < 2) {
-        return -1;
-    }
+    ARG_INIT()
+    INT_ARG(dim)
 
-    *dim = atoi(argv[1]);
-
-    int i = 2;
-    while (i < argc) {
-        if (!strcmp(argv[i], "--dest")) {
-            i++;
-            if (i < argc) {
-                *dest = argv[i];
-            }
-            i++;
-        } else if (!strcmp(argv[i], "--threads")) {
-            i++;
-            if (i < argc) {
-                *threads = atoi(argv[i]);
-            }
-            i++;
-        } else if (!strcmp(argv[i], "--blocks")) {
-            i++;
-            if (i < argc) {
-                *blocks = atoi(argv[i]);
-            }
-            i++;
-        }
-    }
+    OPT_START()
+    OPT_STR_ARG("--dest", dest)
+    OPT_INT_ARG("--threads", threads)
+    OPT_INT_ARG("--blocks", blocks)
+    OPT_END()
 
     return 0;
 }
@@ -56,8 +44,6 @@ int main(int argc, char** argv) {
     }
 
     cudaGetDeviceProperties(&prop, device);
-
-    // printf("Max Threads per SM: %d\n", prop.maxThreadsPerMultiProcessor);
 
     int dim;
     int threads = 256;
