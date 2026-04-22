@@ -5,24 +5,17 @@
 
 #include "matrix.h"
 #include "serial.h"
+#include "arg_parser.h"
+
 
 int parse_args(int argc, char** argv, int* dim, char** dest) {
-    if (argc < 2) {
-        return -1;
-    }
 
-    *dim = atoi(argv[1]);
+    ARG_INIT()
+    INT_ARG(dim)
 
-    int i = 2;
-    while (i < argc) {
-        if (!strcmp(argv[i], "--dest")) {
-            i++;
-            if (i < argc) {
-                *dest = argv[i];
-            }
-            i++;
-        }
-    }
+    OPT_START()
+    OPT_STR_ARG("--dest", dest)
+    OPT_END()
 
     return 0;
 }
@@ -35,7 +28,7 @@ int main(int argc, char **argv) {
     Matrix a = matrix_filled(dim, dim, 7);
     Matrix b = matrix_filled(dim, dim, 13);
     Matrix c = matrix_calloc(dim, dim);
-    
+
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 

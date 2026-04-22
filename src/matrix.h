@@ -39,7 +39,7 @@ void matrix_free(Matrix m);
 
 int matrix_save(Matrix m, FILE* file);
 
-int matrix_load(Matrix* m, FILE* file);
+int matrix_load(Matrix* m, char* file_path);
 
 #ifdef __cplusplus
 }

@@ -6,25 +6,19 @@
 
 #include "matrix.h"
 #include "openmp.h"
+#include "arg_parser.h"
+
 
 int parse_args(int argc, char** argv, int* dim, int* num_threads, char** dest) {
-    if (argc < 3) {
-        return -1;
-    }
 
-    *dim = atoi(argv[1]);
-    *num_threads = atoi(argv[2]);
+    ARG_INIT()
+    INT_ARG(dim)
+    INT_ARG(num_threads)
 
-    int i = 3;
-    while (i < argc) {
-        if (!strcmp(argv[i], "--dest")) {
-            i++;
-            if (i < argc) {
-                *dest = argv[i];
-            }
-            i++;
-        }
-    }
+    OPT_START()
+    OPT_STR_ARG("--dest", dest)
+    OPT_END()
+
     return 0;
 }
 

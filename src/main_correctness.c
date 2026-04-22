@@ -1,29 +1,31 @@
 #include <stdio.h>
 
 #include "matrix.h"
+#include "arg_parser.h"
+
 
 #define TOLERANCE 1e-12
 
-int parse_args(int argc, char** argv, Matrix* a, Matrix* b) {
-    if (argc < 3) {
-        return -1;
-    }
+int parse_args(int argc, char** argv, char** path_a, char** path_b) {
 
-    FILE* file_a = fopen(argv[1], "r");
-    matrix_load(a, file_a);
-    fclose(file_a);
-
-    FILE* file_b = fopen(argv[2], "r");
-    matrix_load(b, file_b);
-    fclose(file_b);
+    ARG_INIT()
+    STR_ARG(path_a)
+    STR_ARG(path_b)
 
     return 0;
 }
 
 int main(int argc, char **argv) {
+
+    char* path_a;
+    char* path_b;
     Matrix a;
     Matrix b;
-    parse_args(argc, argv, &a, &b);
+
+    parse_args(argc, argv, &path_a, &path_b);
+    matrix_load(&a, path_a);
+    matrix_load(&b, path_b);
+
     double norm = matrix_frobenius_norm(a, b);
 
     for (int i = 0; i < a.rows; i++) {

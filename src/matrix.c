@@ -69,10 +69,15 @@ int matrix_save(Matrix m, FILE* file) {
     return 0;
 }
 
-int matrix_load(Matrix* m, FILE* file) {
+int matrix_load(Matrix* m, char* file_path) {
+    FILE* file = fopen(file_path, "r");
+    if (!file) {
+        return -1;
+    }
+
     size_t rows;
     size_t cols;
-    fscanf(file, "%ld;", &rows);  
+    fscanf(file, "%ld;", &rows);
     fscanf(file, "%ld;", &cols);
     *m = matrix_calloc(rows, cols);
     for (size_t i = 0; i < m->rows; i++) {
@@ -80,5 +85,6 @@ int matrix_load(Matrix* m, FILE* file) {
             fscanf(file, "%f;", matrix_index(*m, i, j));
         }
     }
+    fclose(file);
     return 0;
 }
