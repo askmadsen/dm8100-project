@@ -89,9 +89,6 @@ int main(int argc, char** argv) {
     cudaMemcpy(b_dev.ptr, b.ptr, dim*dim*sizeof(float), cudaMemcpyHostToDevice);
     cudaMemset(c_dev.ptr, 0, dim*dim*sizeof(float));
 
-    //int blocks = dim * dim / 1024 + 1;
-    //int threads = dim * dim < 1024 ? dim * dim : 1024;
-
     clock_gettime(CLOCK_MONOTONIC, &start);
 
 

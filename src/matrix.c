@@ -38,7 +38,7 @@ void matrix_transpose(Matrix m) {
 void matrix_fill(Matrix m, int scale) {
     for (size_t i = 0; i < m.rows; i++) {
         for (size_t j = 0; j < m.cols; j++) {
-            m.ptr[i * m.cols + j] = i * scale + j;
+            m.ptr[i * m.cols + j] = (i * scale + j) % (scale * scale);
         }
     }
 }
