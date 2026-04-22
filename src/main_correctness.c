@@ -16,9 +16,8 @@ int parse_args(int argc, char** argv, char** path_a, char** path_b) {
 }
 
 int main(int argc, char **argv) {
-
-    char* path_a;
-    char* path_b;
+    char* path_a = NULL;
+    char* path_b = NULL;
     Matrix a;
     Matrix b;
 

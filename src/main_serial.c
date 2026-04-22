@@ -13,9 +13,10 @@ int parse_args(int argc, char** argv, int* dim, char** dest) {
     ARG_INIT()
     INT_ARG(dim)
 
-    OPT_START()
-    OPT_STR_ARG("--dest", dest)
-    OPT_END()
+    OPT_ARGS() {
+        OPT_STR_ARG("--dest", dest)
+        OPT_END()
+    }
 
     return 0;
 }
@@ -41,9 +42,7 @@ int main(int argc, char **argv) {
     printf("%.6f\n", elapsed);
 
     if (dest != NULL) {
-        FILE* file = fopen(dest, "w");
-        matrix_save(c, file);
-        fclose(file);
+        matrix_save(c, dest);
     }
 
     matrix_free(a);

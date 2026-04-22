@@ -58,7 +58,12 @@ void matrix_free(Matrix m) {
     free(m.ptr);
 }
 
-int matrix_save(Matrix m, FILE* file) {
+int matrix_save(Matrix m, char* file_path) {
+    FILE* file = fopen(file_path, "w");
+    if (!file) {
+        return -1;
+    }
+    
     fprintf(file, "%ld;", m.rows);
     fprintf(file, "%ld;", m.cols);
     for (size_t i = 0; i < m.rows; i++) {
@@ -66,6 +71,8 @@ int matrix_save(Matrix m, FILE* file) {
             fprintf(file, "%f;", *matrix_index(m, i, j));
         }
     }
+
+    fclose(file);
     return 0;
 }
 
@@ -85,6 +92,7 @@ int matrix_load(Matrix* m, char* file_path) {
             fscanf(file, "%f;", matrix_index(*m, i, j));
         }
     }
+    
     fclose(file);
     return 0;
 }

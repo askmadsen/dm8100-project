@@ -14,11 +14,12 @@ int parse_args(int argc, char** argv, int* dim, int* threads, int* blocks, char*
     ARG_INIT()
     INT_ARG(dim)
 
-    OPT_START()
-    OPT_STR_ARG("--dest", dest)
-    OPT_INT_ARG("--threads", threads)
-    OPT_INT_ARG("--blocks", blocks)
-    OPT_END()
+    OPT_ARGS() {
+        OPT_STR_ARG("--dest", dest)
+        OPT_INT_ARG("--threads", threads)
+        OPT_INT_ARG("--blocks", blocks)
+        OPT_END()
+    }
 
     return 0;
 }
@@ -99,9 +100,7 @@ int main(int argc, char** argv) {
     printf("%f\n", elapsed);
 
     if (dest != NULL) {
-        FILE* file = fopen(dest, "w");
-        matrix_save(c, file);
-        fclose(file);
+        matrix_save(c, dest);
     }
 
     cudaError_t error = cudaGetLastError();

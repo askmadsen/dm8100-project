@@ -5,7 +5,7 @@ FLAGS    := -Wall -Wextra -O2
 NVFLAGS  := -O2
 OMPFLAGS := -fopenmp
 
-all: target/main_serial target/main_openmp target/main_correctness target/openmpi target/main_cuda | target
+all: target/main_serial target/main_openmp target/main_correctness target/main_openmpi target/main_cuda | target
 
 # Executables
 target/main_serial: obj/main_serial.o obj/matrix.o obj/serial.o | target
@@ -17,7 +17,7 @@ target/main_openmp: obj/main_openmp.o obj/matrix.o obj/openmp.o | target
 target/main_correctness: obj/main_correctness.o obj/matrix.o obj/serial.o obj/openmp.o | target
 	$(CC) $^ -lm $(OMPFLAGS) -o $@
 
-target/openmpi: obj/openmpi.o obj/matrix.o obj/serial.o | target
+target/main_openmpi: obj/main_openmpi.o obj/matrix.o obj/serial.o | target
 	$(MPICC) $^ -lm -o $@
 
 target/main_cuda: obj/matrix.o obj/cuda.o obj/main_cuda.o | target
@@ -33,7 +33,7 @@ obj/main_openmp.o: src/main_openmp.c | obj
 obj/main_correctness.o: src/main_correctness.c | obj
 	$(CC) $(FLAGS) $(OMPFLAGS) -c $< -o $@
 
-obj/openmpi.o: src/openmpi.c | obj
+obj/main_openmpi.o: src/main_openmpi.c | obj
 	$(MPICC) $(FLAGS) -c $< -o $@
 
 obj/main_cuda.o: src/main_cuda.cu | obj

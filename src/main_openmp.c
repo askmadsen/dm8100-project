@@ -1,6 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
 #include <omp.h>
 
@@ -15,9 +13,10 @@ int parse_args(int argc, char** argv, int* dim, int* num_threads, char** dest) {
     INT_ARG(dim)
     INT_ARG(num_threads)
 
-    OPT_START()
-    OPT_STR_ARG("--dest", dest)
-    OPT_END()
+    OPT_ARGS() {
+        OPT_STR_ARG("--dest", dest)
+        OPT_END()
+    }
 
     return 0;
 }
@@ -53,8 +52,7 @@ int main(int argc, char **argv) {
     printf("%.6f\n", elapsed);
 
     if (dest != NULL) {
-        FILE* file = fopen(dest, "w");
-        matrix_save(c, file);
+        matrix_save(c, dest);
     }
 
     matrix_free(a);
