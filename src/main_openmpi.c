@@ -85,12 +85,17 @@ int main_orchestrator(int argc, char** argv) {
             }
         }
 
+        if (chunk_index >= chunk_count - worker_count) {
+            continue;
+        }
+
         MatrixChunk next_chunk = chunk_from_index(chunk_index + worker_count, d, chunk_size);
         process_chunks[recv_rank - 1] = next_chunk;
         int chunk_size[2] = {
             next_chunk.row_end - next_chunk.row_start,
             next_chunk.col_end - next_chunk.col_start,
         };
+
         MPI_Send(chunk_size, 2, MPI_INT, recv_rank, 0, MPI_COMM_WORLD);
         MPI_Send(a.ptr + next_chunk.row_start * d, chunk_size[0] * d, MPI_FLOAT, recv_rank, 0, MPI_COMM_WORLD);
         MPI_Send(b.ptr + next_chunk.col_start * d, chunk_size[1] * d, MPI_FLOAT, recv_rank, 0, MPI_COMM_WORLD);
