@@ -13,14 +13,15 @@ typedef struct Matrix {
     DATA* ptr;
     size_t rows;
     size_t cols;
+    size_t stride;
 } Matrix;
 
 static inline Matrix matrix_new(DATA* ptr, size_t rows, size_t cols) {
-    return (Matrix) { ptr, rows, cols };
+    return (Matrix) { ptr, rows, cols, cols };
 }
 
 static inline DATA* matrix_index(Matrix m, size_t i, size_t j) {
-    return m.ptr + i * m.cols + j;
+    return m.ptr + i * m.stride + j;
 }
 
 void matrix_display(Matrix m);
@@ -40,6 +41,11 @@ void matrix_free(Matrix m);
 int matrix_save(Matrix m, char* file_path);
 
 int matrix_load(Matrix* m, char* file_path);
+
+Matrix up(Matrix m);
+Matrix down(Matrix m);
+Matrix left(Matrix m);
+Matrix right(Matrix m);
 
 #ifdef __cplusplus
 }

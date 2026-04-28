@@ -96,3 +96,19 @@ int matrix_load(Matrix* m, char* file_path) {
     fclose(file);
     return 0;
 }
+
+Matrix up(Matrix m) {
+    return (Matrix) { m.ptr, m.rows / 2, m.cols, m.stride };
+}
+
+Matrix down(Matrix m) {
+    return (Matrix) { m.ptr + m.rows / 2 * m.stride, m.rows - m.rows / 2, m.cols, m.stride };
+}
+
+Matrix left(Matrix m) {
+    return (Matrix) { m.ptr, m.rows, m.cols / 2, m.stride };
+}
+
+Matrix right(Matrix m) {
+    return (Matrix) { m.ptr + m.cols / 2, m.rows, m.cols - m.cols / 2, m.stride };
+}
