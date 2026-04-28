@@ -27,7 +27,7 @@ void matmul_transposed(Matrix a, Matrix bT, Matrix c) {
 }
 
 void matmul_chunks2(Matrix a, Matrix b, Matrix c) {
-    if (a.rows == 1 || b.rows == 1 || c.cols == 1) {
+    if (a.rows + b.rows + c.cols <= 48) {
         matmul(a, b, c);
     } else {
         Matrix a1 = up(left(a));

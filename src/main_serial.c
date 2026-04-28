@@ -30,12 +30,6 @@ int main(int argc, char **argv) {
     Matrix b = matrix_filled(dim, dim, 13);
     Matrix c = matrix_calloc(dim, dim);
 
-    matrix_save(a, "a.txt");
-    matrix_save(up(a), "up.txt");
-    matrix_save(down(a), "down.txt");
-    matrix_save(left(a), "left.txt");
-    matrix_save(right(a), "right.txt");
-
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
