@@ -13,3 +13,8 @@ Using normal matrix mult (ikj order): 0.6 seconds
 Using normal matrix mult (ikj order) and different scheduler options made no difference
 
 Tried collaps with 1, 2 and 3 to no real effect. Collapse(1) behaved like using no collapse
+
+
+Tried running serial with IKJ loop vs divide anc concourer algorithm with dim = 10.000.
+IKJ: 351,07 seconds
+Divide and conqourer: 327,25 seconds
