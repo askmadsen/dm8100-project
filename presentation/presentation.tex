@@ -11,6 +11,8 @@
   \setbeamertemplate{caption}[numbered]	% Set caption to be numbered
 }
 
+\setbeamertemplate{navigation symbols}{}
+
 % Uncomment this to have the outline at the beginning of each section highlighted.
 %\AtBeginSection[]
 %{
@@ -28,6 +30,7 @@
 \institute{University of Southern Denmark}					% Author affiliation
 \date{\today}									% Today's date	
 \begin{document}
+
 
 % Title page
 % This page includes the informations defined earlier including title, author/s, affiliation/s and the date
@@ -49,6 +52,20 @@
 %\end{frame}
 
 \section{Section One}
+
+
+\begin{frame}{What to include}
+The presentations are in the exam period in June unless you have an agreement with me to have an earlier exam (some of you need this for their exchange program, etc.). 
+Closer to the date, I will make a list of time slots, so you can pick your favourite time. For the presentation slides, 
+plan for a 10-15-minute presentation (if you are in a group, plan for more time, not double, but more). Afterwards, the censor and I will ask some questions for about 10 mins as well. 
+
+The slides are meant for the presentation and do not need to be self-explanatory, but should become clear as you present them to us. We are interested in the challenges and how you implemented 
+the matrix-matrix multiplications. And of course, how your code performs and scales. No need to go crazy, but explore as much or little as you like. 
+
+For running the project, I will reserve a GPU partition on UCloud after the maintenance period. Please do not stop the GPU run and use sbatch to queue your runs, 
+so there is as little interference as possible. I will upload a simple start script to the exam project. For OpenMP and MPI, feel free to launch your own instance on UCLoud. 
+Of course, you can use your own hardware as well. Just mention it somewhere on the slides, so we know. 
+\end{frame}
 
 \begin{frame}{Slide with bullet points}
 	This is a bullet list of two points:
