@@ -1,3 +1,10 @@
+#pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -6,30 +13,42 @@ if (error != 0) { \
     return error; \
 }
 
+#define CONTEXT(expr, context) int error = expr; \
+if (error != 0) { \
+    context; \
+    return error; \
+}
+
 #define ARG_INIT() int i = 1;
 
 #define STR_ARG(var) if (argc >= i) { \
     *var = argv[i++]; \
 } else { \
+    fprintf(stderr, "Missing positional argument %d\n", i); \
     return -1; \
 }
 
 #define INT_ARG(var) if (argc >= i) { \
-    return parse_int(argv[i++], var); \
+    CONTEXT(parse_int(argv[i++], var), fprintf(stderr, "While parsing positional argument %d\n", i - 1)); \
 } else { \
+    fprintf(stderr, "Missing positional argument %d\n", i); \
     return -1; \
 }
 
-#define OPT_ARGS() while (i < argc)
-#define OPT_ARGS2(args) while (i < argc) { \
-    args { return -1; } \
+#define OPT_ARGS(args) while (i < argc) { \
+    args { \
+        fprintf(stderr, "No optional argument named %s\n", argv[i]); \
+        return -1; \
+    } \
 }
-#define OPT_END() { return -1; }
 
 #define OPT_STR_ARG(arg, var) if (!strcmp(argv[i], arg)) { \
     i++; \
     if (i < argc) { \
         *var = argv[i]; \
+    } else { \
+        fprintf(stderr, "Optional argument %s requires a value\n", argv[i - 1]); \
+        return -1; \
     } \
     i++; \
 } else
@@ -37,9 +56,16 @@ if (error != 0) { \
 #define OPT_INT_ARG(arg, var) if (!strcmp(argv[i], arg)) { \
     i++; \
     if (i < argc) { \
-        CHECK_ERROR(parse_int(argv[i++], var)); \
+        CONTEXT(parse_int(argv[i++], var), fprintf(stderr, "While parsing value for optional argument %s\n", argv[i - 2])); \
+    } else { \
+        fprintf(stderr, "Optional argument %s requires a value\n", argv[i - 1]); \
+        return -1; \
     } \
     i++; \
 } else
 
 int parse_int(char* s, int* out);
+
+#ifdef __cplusplus
+}
+#endif

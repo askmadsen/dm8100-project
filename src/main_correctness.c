@@ -7,7 +7,6 @@
 #define TOLERANCE 1e-12
 
 int parse_args(int argc, char** argv, char** path_a, char** path_b) {
-
     ARG_INIT()
     STR_ARG(path_a)
     STR_ARG(path_b)

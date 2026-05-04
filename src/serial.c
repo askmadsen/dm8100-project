@@ -4,10 +4,10 @@
 #include <stdio.h>
 
 void matmul(Matrix a, Matrix b, Matrix c) {
-    for (size_t i = 0; i < c.rows; i++) {
-        for (size_t k = 0; k < a.cols; k++) {
+    for (int i = 0; i < c.rows; i++) {
+        for (int k = 0; k < a.cols; k++) {
             float  entry= *matrix_index(a, i, k);
-            for (size_t j = 0; j < c.cols; j++) {
+            for (int j = 0; j < c.cols; j++) {
                 *matrix_index(c, i, j) += entry * *matrix_index(b, k, j);
             }
         }
@@ -15,10 +15,10 @@ void matmul(Matrix a, Matrix b, Matrix c) {
 }
 
 void matmul_transposed(Matrix a, Matrix bT, Matrix c) {
-    for (size_t i = 0; i < c.rows; i++) {
-        for (size_t j = 0; j < c.cols; j++) {
+    for (int i = 0; i < c.rows; i++) {
+        for (int j = 0; j < c.cols; j++) {
             float sum = 0;
-            for (size_t k = 0; k < a.cols; k++) {
+            for (int k = 0; k < a.cols; k++) {
                 sum += *matrix_index(a, i, k) * *matrix_index(bT, j, k);
             }
             *matrix_index(c, i, j) = sum;

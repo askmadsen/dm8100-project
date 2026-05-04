@@ -22,11 +22,10 @@ int parse_args(int argc, char** argv, int* d, char** dest, int* chunk_size) {
     ARG_INIT()
     INT_ARG(d)
 
-    OPT_ARGS() {
+    OPT_ARGS(
         OPT_STR_ARG("--dest", dest)
         OPT_INT_ARG("--chunk-size", chunk_size)
-        OPT_END()
-    }
+    )
 
     return 0;
 }

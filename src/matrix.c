@@ -6,8 +6,8 @@
 #include <math.h>
 
 void matrix_display(Matrix m) {
-    for (size_t i = 0; i < m.rows; i++) {
-        for (size_t j = 0; j < m.cols; j++) {
+    for (int i = 0; i < m.rows; i++) {
+        for (int j = 0; j < m.cols; j++) {
             printf("%15.1f", *matrix_index(m, i, j));
         }
         printf("\n");
@@ -16,8 +16,8 @@ void matrix_display(Matrix m) {
 
 double matrix_frobenius_norm(Matrix m, Matrix n) {
     double sum = 0.0;
-    for (size_t i = 0; i < m.rows; i++) {
-        for (size_t j = 0; j < m.cols; j++) {
+    for (int i = 0; i < m.rows; i++) {
+        for (int j = 0; j < m.cols; j++) {
             double diff = *matrix_index(m, i, j) - *matrix_index(n, i, j);
             sum += diff * diff;
         }
@@ -26,8 +26,8 @@ double matrix_frobenius_norm(Matrix m, Matrix n) {
 }
 
 void matrix_transpose(Matrix m) {
-    for (size_t i = 0; i < m.rows; i++) {
-        for (size_t j = i + 1; j < m.cols; j++) {
+    for (int i = 0; i < m.rows; i++) {
+        for (int j = i + 1; j < m.cols; j++) {
             DATA temp = *matrix_index(m, i, j);
             *matrix_index(m, i, j) = *matrix_index(m, j, i);
             *matrix_index(m, j, i) = temp;
@@ -36,19 +36,19 @@ void matrix_transpose(Matrix m) {
 }
 
 void matrix_fill(Matrix m, int scale) {
-    for (size_t i = 0; i < m.rows; i++) {
-        for (size_t j = 0; j < m.cols; j++) {
+    for (int i = 0; i < m.rows; i++) {
+        for (int j = 0; j < m.cols; j++) {
             m.ptr[i * m.cols + j] = (i * scale + j) % (scale * scale);
         }
     }
 }
 
-Matrix matrix_calloc(size_t rows, size_t cols) {
+Matrix matrix_calloc(int rows, int cols) {
     DATA* ptr = calloc(rows * cols, sizeof(DATA));
     return matrix_new(ptr, rows, cols);
 }
 
-Matrix matrix_filled(size_t rows, size_t cols, int scale) {
+Matrix matrix_filled(int rows, int cols, int scale) {
     Matrix m = matrix_calloc(rows, cols);
     matrix_fill(m, scale);
     return m;
@@ -64,10 +64,10 @@ int matrix_save(Matrix m, char* file_path) {
         return -1;
     }
     
-    fprintf(file, "%ld;", m.rows);
-    fprintf(file, "%ld;", m.cols);
-    for (size_t i = 0; i < m.rows; i++) {
-        for (size_t j = 0; j < m.cols; j++) {
+    fprintf(file, "%d;", m.rows);
+    fprintf(file, "%d;", m.cols);
+    for (int i = 0; i < m.rows; i++) {
+        for (int j = 0; j < m.cols; j++) {
             fprintf(file, "%f;", *matrix_index(m, i, j));
         }
     }
@@ -82,13 +82,13 @@ int matrix_load(Matrix* m, char* file_path) {
         return -1;
     }
 
-    size_t rows;
-    size_t cols;
-    fscanf(file, "%ld;", &rows);
-    fscanf(file, "%ld;", &cols);
+    int rows;
+    int cols;
+    fscanf(file, "%d;", &rows);
+    fscanf(file, "%d;", &cols);
     *m = matrix_calloc(rows, cols);
-    for (size_t i = 0; i < m->rows; i++) {
-        for (size_t j = 0; j < m->cols; j++) {
+    for (int i = 0; i < m->rows; i++) {
+        for (int j = 0; j < m->cols; j++) {
             fscanf(file, "%f;", matrix_index(*m, i, j));
         }
     }

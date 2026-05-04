@@ -11,16 +11,16 @@ typedef float DATA;
 
 typedef struct Matrix {
     DATA* ptr;
-    size_t rows;
-    size_t cols;
-    size_t stride;
+    int rows;
+    int cols;
+    int stride;
 } Matrix;
 
-static inline Matrix matrix_new(DATA* ptr, size_t rows, size_t cols) {
+static inline Matrix matrix_new(DATA* ptr, int rows, int cols) {
     return (Matrix) { ptr, rows, cols, cols };
 }
 
-static inline DATA* matrix_index(Matrix m, size_t i, size_t j) {
+static inline DATA* matrix_index(Matrix m, int i, int j) {
     return m.ptr + i * m.stride + j;
 }
 
@@ -30,11 +30,11 @@ double matrix_frobenius_norm(Matrix m, Matrix n);
 
 void matrix_transpose(Matrix m);
 
-Matrix matrix_calloc(size_t rows, size_t cols);
+Matrix matrix_calloc(int rows, int cols);
 
 void matrix_fill(Matrix m, int scale);
 
-Matrix matrix_filled(size_t rows, size_t cols, int scale);
+Matrix matrix_filled(int rows, int cols, int scale);
 
 void matrix_free(Matrix m);
 

@@ -14,12 +14,11 @@ int parse_args(int argc, char** argv, int* dim, int* threads, int* blocks, char*
     ARG_INIT()
     INT_ARG(dim)
 
-    OPT_ARGS() {
+    OPT_ARGS(
         OPT_STR_ARG("--dest", dest)
         OPT_INT_ARG("--threads", threads)
         OPT_INT_ARG("--blocks", blocks)
-        OPT_END()
-    }
+    )
 
     return 0;
 }

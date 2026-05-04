@@ -8,15 +8,13 @@
 
 
 int parse_args(int argc, char** argv, int* dim, int* num_threads, char** dest) {
-
     ARG_INIT()
     INT_ARG(dim)
     INT_ARG(num_threads)
 
-    OPT_ARGS() {
+    OPT_ARGS(
         OPT_STR_ARG("--dest", dest)
-        OPT_END()
-    }
+    )
 
     return 0;
 }
@@ -27,7 +25,7 @@ int main(int argc, char **argv) {
     int num_threads;
     char* dest = NULL;
 
-    parse_args(argc, argv, &dim, &num_threads, &dest);
+    CONTEXT(parse_args(argc, argv, &dim, &num_threads, &dest), fprintf(stderr, "While parsing arguments for main_openmp\n"));
 
     omp_set_num_threads(num_threads);
 

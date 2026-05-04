@@ -9,14 +9,12 @@
 
 
 int parse_args(int argc, char** argv, int* dim, char** dest) {
-
     ARG_INIT()
     INT_ARG(dim)
 
-    OPT_ARGS() {
+    OPT_ARGS(
         OPT_STR_ARG("--dest", dest)
-        OPT_END()
-    }
+    )
 
     return 0;
 }
