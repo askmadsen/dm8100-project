@@ -21,14 +21,14 @@ if (error != 0) { \
 
 #define ARG_INIT() int i = 1;
 
-#define STR_ARG(var) if (argc >= i) { \
+#define STR_ARG(var) if (i < argc) { \
     *var = argv[i++]; \
 } else { \
     fprintf(stderr, "Missing positional argument %d\n", i); \
     return -1; \
 }
 
-#define INT_ARG(var) if (argc >= i) { \
+#define INT_ARG(var) if (i < argc) { \
     CONTEXT(parse_int(argv[i++], var), fprintf(stderr, "While parsing positional argument %d\n", i - 1)); \
 } else { \
     fprintf(stderr, "Missing positional argument %d\n", i); \
