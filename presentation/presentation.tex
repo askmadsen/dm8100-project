@@ -1,0 +1,73 @@
+\documentclass{beamer}					% Document class
+
+\usepackage[english]{babel}				% Set language
+\usepackage[utf8x]{inputenc}			% Set encoding
+
+\mode<presentation>						% Set options
+{
+  \usetheme{default}					% Set theme
+  \usecolortheme{default} 				% Set colors
+  \usefonttheme{default}  				% Set font theme
+  \setbeamertemplate{caption}[numbered]	% Set caption to be numbered
+}
+
+% Uncomment this to have the outline at the beginning of each section highlighted.
+%\AtBeginSection[]
+%{
+%  \begin{frame}{Outline}
+%    \tableofcontents[currentsection]
+%  \end{frame}
+%}
+
+\usepackage{graphicx}					% For including figures
+\usepackage{booktabs}					% For table rules
+\usepackage{hyperref}					% For cross-referencing
+
+\title{DM8100 - High Performance Computing}	    % Presentation title
+\author{Ask Madsen, Bjarke Hammerbak Paluszewski}								% Presentation author
+\institute{University of Southern Denmark}					% Author affiliation
+\date{\today}									% Today's date	
+\begin{document}
+
+% Title page
+% This page includes the informations defined earlier including title, author/s, affiliation/s and the date
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% Outline
+% This page includes the outline (Table of content) of the presentation. All sections and subsections will appear in the outline by default.
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+% The following is the most frequently used slide types in beamer
+% The slide structure is as follows:
+%
+%\begin{frame}{<slide-title>}
+%	<content>
+%\end{frame}
+
+\section{Section One}
+
+\begin{frame}{Slide with bullet points}
+	This is a bullet list of two points:
+    \begin{itemize}
+		\item Point one
+        \item Point two
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Slide with two columns}
+	\begin{columns}
+		\column{.5\textwidth}
+        Text goes in first column.
+        
+        \column{.5\textwidth}
+        Text goes in second column
+	\end{columns}
+\end{frame}
+
+\section{Section Two}
+
+\end{document}

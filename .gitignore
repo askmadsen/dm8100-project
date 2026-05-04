@@ -58,3 +58,15 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+
+# Latex files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.pdf
+*.snm
+*.synctex.gz
+*.toc
