@@ -5,22 +5,24 @@ FLAGS    := -Wall -Wextra -O2
 NVFLAGS  := -O2
 OMPFLAGS := -fopenmp
 
+SHARED = obj/matrix.o obj/arg_parser.o
+
 all: target/main_serial target/main_openmp target/main_correctness target/main_openmpi target/main_cuda | target
 
 # Executables
-target/main_serial: obj/main_serial.o obj/matrix.o obj/serial.o | target
+target/main_serial: obj/main_serial.o $(SHARED) obj/serial.o | target
 	$(CC) $^ -lm -o $@
 
-target/main_openmp: obj/main_openmp.o obj/matrix.o obj/openmp.o | target
+target/main_openmp: obj/main_openmp.o $(SHARED) obj/openmp.o | target
 	$(CC) $^ -lm $(OMPFLAGS) -o $@
 
-target/main_correctness: obj/main_correctness.o obj/matrix.o obj/serial.o obj/openmp.o | target
+target/main_correctness: obj/main_correctness.o $(SHARED) obj/serial.o obj/openmp.o | target
 	$(CC) $^ -lm $(OMPFLAGS) -o $@
 
-target/main_openmpi: obj/main_openmpi.o obj/matrix.o obj/serial.o | target
+target/main_openmpi: obj/main_openmpi.o $(SHARED) obj/serial.o | target
 	$(MPICC) $^ -lm -o $@
 
-target/main_cuda: obj/matrix.o obj/cuda.o obj/main_cuda.o | target
+target/main_cuda: $(SHARED) obj/cuda.o obj/main_cuda.o | target
 	$(NVCC) $^ -lm -o $@
 
 # Object files
@@ -54,4 +56,4 @@ target:
 clean:
 	rm -rf obj target
 
-.PHONY: all clean
+.PHONY: all clean shared
