@@ -6,9 +6,9 @@
 void matmul(Matrix a, Matrix b, Matrix c) {
     for (size_t i = 0; i < c.rows; i++) {
         for (size_t k = 0; k < a.cols; k++) {
-            float r = *matrix_index(a, i, k);
+            float  entry= *matrix_index(a, i, k);
             for (size_t j = 0; j < c.cols; j++) {
-                *matrix_index(c, i, j) += r * *matrix_index(b, k, j);
+                *matrix_index(c, i, j) += entry * *matrix_index(b, k, j);
             }
         }
     }
