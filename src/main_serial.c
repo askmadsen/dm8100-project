@@ -8,12 +8,14 @@
 #include "arg_parser.h"
 
 
-int parse_args(int argc, char** argv, int* dim, char** dest) {
+int parse_args(int argc, char** argv, int* dim, char** dest, const char** alg, int* chunk_limit) {
     ARG_INIT()
     INT_ARG(dim)
 
     OPT_ARGS(
         OPT_STR_ARG("--dest", dest)
+        OPT_STR_ARG("--alg", alg)
+        OPT_INT_ARG("--chunk-limit", chunk_limit)
     )
 
     return 0;
@@ -22,7 +24,13 @@ int parse_args(int argc, char** argv, int* dim, char** dest) {
 int main(int argc, char **argv) {
     int dim;
     char* dest = NULL;
-    parse_args(argc, argv, &dim, &dest);
+    const char* alg = "chunks";
+    int chunk_limit = 48;
+    
+    CONTEXT(
+        parse_args(argc, argv, &dim, &dest, &alg, &chunk_limit), 
+        fprintf(stderr, "While parsing arguments\n")
+    );
 
     Matrix a = matrix_filled(dim, dim, 7);
     Matrix b = matrix_filled(dim, dim, 13);
@@ -31,8 +39,17 @@ int main(int argc, char **argv) {
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    // matrix_transpose(b);
-    matmul_chunks2(a, b, c);
+    if (!strcmp(alg, "simple") || !strcmp(alg, "matmul")) {
+        matmul(a, b, c);
+    } else if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_transposed")) {
+        matrix_transpose(b);
+        matmul_transposed(a, b, c);
+    } else if (!strcmp(alg, "chunks") || !strcmp(alg, "matmul_chunks")) {
+        matmul_chunks(a, b, c);
+    } else {
+        fprintf(stderr, "Error: No algorithm named %s\n", alg);
+        return 1;
+    }
 
     clock_gettime(CLOCK_MONOTONIC, &end);
 

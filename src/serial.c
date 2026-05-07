@@ -26,7 +26,7 @@ void matmul_transposed(Matrix a, Matrix bT, Matrix c) {
     }
 }
 
-void matmul_chunks2(Matrix a, Matrix b, Matrix c) {
+void matmul_chunks(Matrix a, Matrix b, Matrix c) {
     if (a.rows + b.rows + c.cols <= 48) {
         matmul(a, b, c);
     } else {
@@ -43,13 +43,13 @@ void matmul_chunks2(Matrix a, Matrix b, Matrix c) {
         Matrix c3 = down(left(c));
         Matrix c4 = down(right(c));
 
-        matmul_chunks2(a1, b1, c1);
-        matmul_chunks2(a2, b3, c1);
-        matmul_chunks2(a1, b2, c2);
-        matmul_chunks2(a2, b4, c2);
-        matmul_chunks2(a3, b1, c3);
-        matmul_chunks2(a4, b3, c3);
-        matmul_chunks2(a3, b2, c4);
-        matmul_chunks2(a4, b4, c4);
+        matmul_chunks(a1, b1, c1);
+        matmul_chunks(a2, b3, c1);
+        matmul_chunks(a1, b2, c2);
+        matmul_chunks(a2, b4, c2);
+        matmul_chunks(a3, b1, c3);
+        matmul_chunks(a4, b3, c3);
+        matmul_chunks(a3, b2, c4);
+        matmul_chunks(a4, b4, c4);
     }
 }
