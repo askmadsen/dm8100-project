@@ -2,21 +2,25 @@
 
 #include "matrix.h"
 
-typedef struct MatrixChunk {
+
+__device__ typedef struct MatrixChunk {
     int row_start;
     int row_end;
     int col_start;
     int col_end;
 } MatrixChunk;
 
-MatrixChunk chunk_from_index(int i, int rows, int chunk_size) {
+__device__ MatrixChunk chunk_from_index(int i, int rows, int cols, int chunk_size) {
     int row = i * chunk_size / rows * chunk_size;
     int col = i * chunk_size % rows;
+    int row_end = rows - row >= chunk_size ? row + chunk_size : rows;
+    int col_end = cols - col >= chunk_size ? col + chunk_size : cols;
+
     return (MatrixChunk) {
         .row_start = row,
-        .row_end = row + chunk_size,
+        .row_end = row_end,
         .col_start = col,
-        .col_end = col + chunk_size
+        .col_end = col_end
     };
 }
 
@@ -66,18 +70,17 @@ __global__ void matmul_cuda_transposed(Matrix a, Matrix bT, Matrix c) {
 __global__ void matmul_cuda_chunks(Matrix a, Matrix b, Matrix c, int chunk_size) {
     int total_threads = blockDim.x * gridDim.x;
     int work_index = threadIdx.x + blockDim.x * blockIdx.x;
-    int chunk_count = ((m.rows - 1) / chunk_size + 1) * ((m.cols - 1) / chunk_size + 1);
-    
+    int chunk_count = ((c.rows - 1) / chunk_size + 1) * ((c.cols - 1) / chunk_size + 1);
+
     for (int chunk_index = work_index; chunk_index < chunk_count; chunk_index += total_threads) {
-        MatrixChunk chunk = chunk_from_index(chunk_index, c.rows, chunk_size);
-        for (int i = chunk.row_start; i < c.row_end; i++) {
+        MatrixChunk chunk = chunk_from_index(chunk_index, c.rows, c.cols, chunk_size);
+        for (int i = chunk.row_start; i < chunk.row_end; i++) {
             for (int k = 0; k < a.cols; k++) {
-                float entry = *matrix_index(a, i, k);
+                float entry = a.ptr[i * a.cols+ k]; //*matrix_index(a, i, k);
                 for (int j = chunk.col_start; j < chunk.col_end; j++) {
-                    *matrix_index(c, i, j) += entry * *matrix_index(b, k, j);
+                    c.ptr[i * c.cols + j] += entry * b.ptr[k * b.cols + j]; // *matrix_index(b, k, j);
                 }
             }
         }
     }
 }
-

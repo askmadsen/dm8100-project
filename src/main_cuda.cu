@@ -10,7 +10,7 @@
 #include "cuda.h"
 #include "arg_parser.h"
 
-int parse_args(int argc, char** argv, int* dim, int* threads, int* blocks, char** dest) {
+int parse_args(int argc, char** argv, int* dim, int* threads, int* blocks, int* chunk_size, char** dest, const char** alg) {
     ARG_INIT()
     INT_ARG(dim)
 
@@ -18,6 +18,8 @@ int parse_args(int argc, char** argv, int* dim, int* threads, int* blocks, char*
         OPT_STR_ARG("--dest", dest)
         OPT_INT_ARG("--threads", threads)
         OPT_INT_ARG("--blocks", blocks)
+        OPT_INT_ARG("--chunk_size", chunk_size)
+        OPT_STR_ARG("--alg", alg)
     )
 
     return 0;
@@ -41,10 +43,12 @@ int main(int argc, char** argv) {
     int dim;
     int threads = 256;
     int blocks = prop.multiProcessorCount;
+    int chunk_size = 4;
     char* dest = NULL;
+    const char* alg = "matmul_cuda_chunks";
 
 
-    parse_args(argc, argv, &dim, &threads, &blocks, &dest);
+    parse_args(argc, argv, &dim, &threads, &blocks, &chunk_size, &dest, &alg);
 
     float* a_ptr;
     float* b_ptr;
@@ -76,7 +80,7 @@ int main(int argc, char** argv) {
     struct timespec start, end;
 
 
-    // matrix_transpose(b);
+
 
     cudaMemcpy(a_dev.ptr, a.ptr, dim*dim*sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(b_dev.ptr, b.ptr, dim*dim*sizeof(float), cudaMemcpyHostToDevice);
@@ -84,8 +88,19 @@ int main(int argc, char** argv) {
 
     clock_gettime(CLOCK_MONOTONIC, &start);
 
+    if (!strcmp(alg, "chunks") || !strcmp(alg, "matmul_cuda_chunks")) {
+        matmul_cuda_chunks<<<blocks, threads>>>(a_dev, b_dev, c_dev, chunk_size);
+    }
 
-    matmul_cuda_chunks<<<blocks, threads>>>(a_dev, b_dev, c_dev, 16);
+    else if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_cuda_transposed")) {
+        matrix_transpose(b);
+        matmul_cuda_transposed<<<blocks, threads>>>(a_dev, b_dev, c_dev);
+    }
+
+    else {
+        fprintf(stderr, "Matmul algorithm %s is not implemented \n", alg);
+        return -1;
+    }
 
     cudaDeviceSynchronize();
 
