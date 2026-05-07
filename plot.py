@@ -11,19 +11,20 @@ Expected input files in --input_dir:
   strong_mpi.csv,    weak_mpi.csv
   strong_cuda.csv,   weak_cuda.csv
 
-Strong CSV columns : Dim, Threads/Ranks/Blocks[, Threads], Execution_Time, Speedup
-Weak CSV columns   : Dim, Threads/Ranks/Blocks[, Threads], Execution_Time, Scaled_Speedup
+Strong CSV columns : Dim, Threads/Blocks[, Threads], Execution_Time, Speedup
+Weak CSV columns   : Dim, Threads/Blocks[, Threads], Execution_Time, Scaled_Speedup
 
 For CUDA files both Threads and Blocks are present; the x-axis uses Blocks and
-the thread count is shown in the axis label (it is held fixed).
+the thread count is shown in the axis label.
 
 Usage:
-    python plot.py --input_dir results --output_dir plots
+    python plot.py --input_dir results --output_dir plots --sm-count 20 --max-threads-mp 16 --max-threads-mpi 6
     python plot.py --help
 """
 
-import dataclasses
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -34,29 +35,30 @@ from scipy.optimize import curve_fit
 
 
 
+LAWS = Literal["amdahl","gustafson"]
+
+
 # ---------------------------------------------------------------------------
 # CLI configuration
 # ---------------------------------------------------------------------------
 
-@dataclasses.dataclass
+@dataclass
 class Config:
     """Configuration for the scaling plot generator.
 
     Attributes:
         sm_count (int): The streaming multiprocessor count for your GPU
-        max_threads (int): Max number of threads on your CPU
+        max_threads_mp (int): Max number of threads to use for fitting strong or weak scaline of openmp data
+        max_threads_mpi (int): Max number of threads to use for fitting strong or weak scaline of mpi data
         input_dir (Path):  Directory containing the six scaling CSV files
                     (strong/weak x openmp/mpi/cuda).
         output_dir (Path): Directory where the two output figures are saved.
     """
     sm_count: int
-    max_threads: int
+    max_threads_mp: int
+    max_threads_mpi: int
     input_dir: Path
     output_dir: Path = Path(".")
-
-
-
-
 
 
 # ---------------------------------------------------------------------------
@@ -67,8 +69,8 @@ def amdahl(N: np.ndarray, s: float) -> np.ndarray:
     """Amdahl's law: speedup = 1 / (s + (1-s)/N).
 
     Args:
-        N: Array of processor counts.
-        s: Serial fraction of execution time (0 < s < 1).
+        N (np.ndarray): Array of processor counts.
+        s (float): Serial fraction of execution time (0 < s < 1).
 
     Returns:
         Predicted speedup for each value in N.
@@ -80,8 +82,8 @@ def gustafson(N: np.ndarray, s: float) -> np.ndarray:
     """Gustafson's law: scaled_speedup = s + (1-s)*N.
 
     Args:
-        N: Array of processor counts.
-        s: Serial fraction of execution time (0 < s < 1).
+        N (np.ndarray): Array of processor counts.
+        s (float): Serial fraction of execution time (0 < s < 1).
 
     Returns:
         Predicted scaled speedup for each value in N.
@@ -89,17 +91,13 @@ def gustafson(N: np.ndarray, s: float) -> np.ndarray:
     return s + (1.0 - s) * N
 
 
-def fit_serial_fraction(
-    N: np.ndarray,
-    speedup: np.ndarray,
-    law: str,
-) -> float:
-    """Fit the serial fraction s to measured speedup data.
+def fit_serial_fraction(N: np.ndarray, speedup: np.ndarray, law: LAWS) -> float:
+    """Fit the serial fraction s to the measured speedup data.
 
     Args:
-        N:       Measured processor counts.
-        speedup: Measured speedup (or scaled speedup) values.
-        law:     Either ``"amdahl"`` or ``"gustafson"``.
+        N (np.ndarray):       Processor counts.
+        speedup (np.ndarray): Measured speedup or scaled speedup values.
+        law (Literal[str]):   amdahl or gustafson
 
     Returns:
         Best-fit serial fraction s in [0, 1].
@@ -209,8 +207,6 @@ def _x_label(x_col: str, fixed_threads: int | None) -> str:
     """
     if x_col == "Blocks":
         return f"Number of Blocks (T = {fixed_threads} threads)"
-    if x_col == "Ranks":
-        return "Number of Ranks"
     return "Number of Threads"
 
 
@@ -220,7 +216,7 @@ def plot_subplot(
     speedup: np.ndarray,
     x_col: str,
     fixed_threads: int | None,
-    law: str,
+    law: LAWS,
     limit: int,
     title: str,
     y_label: str,
@@ -228,14 +224,14 @@ def plot_subplot(
     """Render measured data and fitted theoretical curve onto a single Axes.
 
     Args:
-        ax:            Matplotlib Axes to draw on.
-        N:             Measured parallelism counts.
-        speedup:       Measured speedup (or scaled speedup) values.
-        x_col:         Name of the parallelism column (for axis label).
-        fixed_threads: Fixed CUDA thread count (``None`` if not CUDA).
-        law:           ``"amdahl"`` for strong scaling, ``"gustafson"`` for weak.
-        title:         Subplot title (e.g. ``"OpenMP"``).
-        y_label:       Y-axis label string.
+        ax:                         Matplotlib Axes to draw on.
+        N (np.ndarray):             Measured parallelism counts.
+        speedup (np.ndarray):       Measured speedup or scaled speedup values.
+        x_col (str):                Name of the parallelism column (for axis label).
+        fixed_threads (int | None): Fixed CUDA thread count (``None`` if not CUDA).
+        law (Literal[str]):         amdahl for strong scaling, gustafson for weak scaling.
+        title (str):                Subplot title (e.g. OpenMP).
+        y_label (str):              Y-axis label string.
     """
 
     idx = np.argmax(N > limit)
@@ -245,7 +241,7 @@ def plot_subplot(
     fn = amdahl if law == "amdahl" else gustafson
     fitted = fn(N_fine, s)
 
-    color_dots = '#2ca02c'   # Professional Blue
+    color_dots = '#2ca02c'
     color_line = '#7f7f7f'
 
     ax.plot(N, speedup, "o", zorder=3, color = color_dots)
@@ -263,7 +259,7 @@ def plot_subplot(
 def build_figure(
     datasets: list[Dataset | None],
     subtitles: list[str],
-    law: str,
+    law: LAWS,
     config: Config,
     fig_title: str,
     y_label: str,
@@ -272,13 +268,13 @@ def build_figure(
     """Create and save a figure with one subplot per method.
 
     Args:
-        datasets:   List of ``(N, speedup, x_col, fixed_threads)`` tuples (or
-                    ``None`` for missing files), one per method [OpenMP, MPI, CUDA].
-        subtitles:  Subplot titles, e.g. ``["OpenMP", "MPI", "CUDA"]``.
-        law:        ``"amdahl"`` or ``"gustafson"``.
-        fig_title:  Overall figure suptitle.
-        y_label:    Shared y-axis label for all subplots.
-        out_path:   File path where the figure is saved.
+        datasets (list[Dataset | None]):   List of (N, speedup, x_col, fixed_threads) tuples one per method [OpenMP, MPI, CUDA].
+                                           None if the data is not available.
+        subtitles (list[str]):             Subplot titles, e.g. ["OpenMP", "MPI", "CUDA"].
+        law (Literal[str]):                amdahl for strong scaling, gustafson for weak scaling.
+        fig_title (str):                   Overall figure suptitle.
+        y_label (str):                     Shared y-axis label for all subplots.
+        out_path (Path):                   File path where the figure is saved.
     """
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
     fig.suptitle(fig_title, fontsize=14, fontweight="bold")
@@ -295,7 +291,8 @@ def build_figure(
             ax.set_axis_off()
         else:
             N, speedup, x_col, fixed_threads = dataset
-            limit = config.sm_count if subtitle == "CUDA" else config.max_threads
+            limits = {"CUDA": config.sm_count, "OpenMP": config.max_threads_mp, "MPI": config.max_threads_mpi}
+            limit = limits[subtitle]
             plot_subplot(ax, N, speedup, x_col, fixed_threads, law, limit, subtitle, y_label)
 
     fig.tight_layout()
@@ -305,14 +302,14 @@ def build_figure(
 
 
 # ---------------------------------------------------------------------------
-# Entry point
+# Main
 # ---------------------------------------------------------------------------
 
 def main(cfg: Config) -> None:
     """Load CSVs, fit scaling laws, and save strong_scaling.png / weak_scaling.png.
 
     Args:
-        cfg: Parsed :class:`Config` from the command line.
+        cfg (Config):
     """
     cfg.output_dir.mkdir(parents=True, exist_ok=True)
 
