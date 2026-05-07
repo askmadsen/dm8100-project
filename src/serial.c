@@ -6,7 +6,7 @@
 void matmul(Matrix a, Matrix b, Matrix c) {
     for (int i = 0; i < c.rows; i++) {
         for (int k = 0; k < a.cols; k++) {
-            float  entry= *matrix_index(a, i, k);
+            float entry = *matrix_index(a, i, k);
             for (int j = 0; j < c.cols; j++) {
                 *matrix_index(c, i, j) += entry * *matrix_index(b, k, j);
             }

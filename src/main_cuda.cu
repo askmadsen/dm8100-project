@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
     struct timespec start, end;
 
 
-    matrix_transpose(b);
+    // matrix_transpose(b);
 
     cudaMemcpy(a_dev.ptr, a.ptr, dim*dim*sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(b_dev.ptr, b.ptr, dim*dim*sizeof(float), cudaMemcpyHostToDevice);
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
     clock_gettime(CLOCK_MONOTONIC, &start);
 
 
-    matmul_cuda_transposed<<<blocks, threads>>>(a_dev, b_dev, c_dev);
+    matmul_cuda_chunks<<<blocks, threads>>>(a_dev, b_dev, c_dev, 16);
 
     cudaDeviceSynchronize();
 

@@ -2,6 +2,24 @@
 
 #include "matrix.h"
 
+typedef struct MatrixChunk {
+    int row_start;
+    int row_end;
+    int col_start;
+    int col_end;
+} MatrixChunk;
+
+MatrixChunk chunk_from_index(int i, int rows, int chunk_size) {
+    int row = i * chunk_size / rows * chunk_size;
+    int col = i * chunk_size % rows;
+    return (MatrixChunk) {
+        .row_start = row,
+        .row_end = row + chunk_size,
+        .col_start = col,
+        .col_end = col + chunk_size
+    };
+}
+
 /*__global__ void matmul_cuda_transposed(Matrix a, Matrix bT, Matrix c) {
     int workIndex = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -44,3 +62,22 @@ __global__ void matmul_cuda_transposed(Matrix a, Matrix bT, Matrix c) {
         c.ptr[i * c.cols + j] = sum;
     }
 }
+
+__global__ void matmul_cuda_chunks(Matrix a, Matrix b, Matrix c, int chunk_size) {
+    int total_threads = blockDim.x * gridDim.x;
+    int work_index = threadIdx.x + blockDim.x * blockIdx.x;
+    int chunk_count = ((m.rows - 1) / chunk_size + 1) * ((m.cols - 1) / chunk_size + 1);
+    
+    for (int chunk_index = work_index; chunk_index < chunk_count; chunk_index += total_threads) {
+        MatrixChunk chunk = chunk_from_index(chunk_index, c.rows, chunk_size);
+        for (int i = chunk.row_start; i < c.row_end; i++) {
+            for (int k = 0; k < a.cols; k++) {
+                float entry = *matrix_index(a, i, k);
+                for (int j = chunk.col_start; j < chunk.col_end; j++) {
+                    *matrix_index(c, i, j) += entry * *matrix_index(b, k, j);
+                }
+            }
+        }
+    }
+}
+
