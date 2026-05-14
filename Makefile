@@ -9,6 +9,8 @@ SHARED = obj/matrix.o obj/arg_parser.o
 
 all: target/main_serial target/main_openmp target/main_correctness target/main_openmpi target/main_cuda | target
 
+all_except_cuda: target/main_serial target/main_openmp target/main_correctness target/main_openmpi | target
+
 # Executables
 target/main_serial: obj/main_serial.o $(SHARED) obj/serial.o | target
 	$(CC) $^ -lm -o $@
