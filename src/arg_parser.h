@@ -50,7 +50,6 @@ if (error != 0) { \
         fprintf(stderr, "Error: Optional argument %s requires a value\n", argv[i - 1]); \
         return -1; \
     } \
-    i++; \
 } else
 
 #define OPT_INT_ARG(arg, var) if (!strcmp(argv[i], arg)) { \
@@ -61,7 +60,6 @@ if (error != 0) { \
         fprintf(stderr, "Error: Optional argument %s requires a value\n", argv[i - 1]); \
         return -1; \
     } \
-    i++; \
 } else
 
 int parse_int(char* s, int* out);
