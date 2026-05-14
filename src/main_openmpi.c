@@ -16,7 +16,7 @@ typedef struct MatrixChunk {
     int col_end;
 } MatrixChunk;
 
-MatrixChunk chunk_from_index(int i, int rows, int chunk_size);
+MatrixChunk chunk_from_index(int i, int rows, int cols, int chunk_size);
 
 int parse_args(int argc, char** argv, int* d, char** dest, int* chunk_size) {
     ARG_INIT()
@@ -55,7 +55,7 @@ int main_orchestrator(int argc, char** argv) {
 
     MatrixChunk* process_chunks = malloc(worker_count * sizeof(MatrixChunk));
     for (int i = 0; i < worker_count; i++) {
-        process_chunks[i] = chunk_from_index(i, d, chunk_size);
+        process_chunks[i] = chunk_from_index(i, d, d, chunk_size);
     }
 
     for (int i = 0; i < worker_count; i++) {
@@ -88,7 +88,7 @@ int main_orchestrator(int argc, char** argv) {
             continue;
         }
 
-        MatrixChunk next_chunk = chunk_from_index(chunk_index + worker_count, d, chunk_size);
+        MatrixChunk next_chunk = chunk_from_index(chunk_index + worker_count, d, d, chunk_size);
         process_chunks[recv_rank - 1] = next_chunk;
         int chunk_size[2] = {
             next_chunk.row_end - next_chunk.row_start,
@@ -160,13 +160,15 @@ int main(int argc, char** argv) {
     }
 }
 
-MatrixChunk chunk_from_index(int i, int rows, int chunk_size) {
+MatrixChunk chunk_from_index(int i, int rows, int cols, int chunk_size) {
     int row = i * chunk_size / rows * chunk_size;
     int col = i * chunk_size % rows;
+    int row_end = row + chunk_size < rows ? row + chunk_size : rows;
+    int col_end = col + chunk_size < cols ? col + chunk_size : cols;
     return (MatrixChunk) {
         .row_start = row,
-        .row_end = row + chunk_size,
+        .row_end = row_end,
         .col_start = col,
-        .col_end = col + chunk_size
+        .col_end = col_end
     };
 }
