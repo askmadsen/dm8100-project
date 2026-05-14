@@ -40,9 +40,7 @@
 
 % Outline
 % This page includes the outline (Table of content) of the presentation. All sections and subsections will appear in the outline by default.
-\begin{frame}{Outline}
-  \tableofcontents
-\end{frame}
+
 
 % The following is the most frequently used slide types in beamer
 % The slide structure is as follows:
@@ -51,7 +49,6 @@
 %	<content>
 %\end{frame}
 
-\section{Section One}
 
 
 \begin{frame}{What to include}
@@ -67,24 +64,20 @@ so there is as little interference as possible. I will upload a simple start scr
 Of course, you can use your own hardware as well. Just mention it somewhere on the slides, so we know. 
 \end{frame}
 
-\begin{frame}{Slide with bullet points}
-	This is a bullet list of two points:
-    \begin{itemize}
-		\item Point one
-        \item Point two
-	\end{itemize}
-\end{frame}
 
-\begin{frame}{Slide with two columns}
-	\begin{columns}
-		\column{.5\textwidth}
-        Text goes in first column.
-        
-        \column{.5\textwidth}
-        Text goes in second column
-	\end{columns}
-\end{frame}
+\include{matrix_struct}
 
-\section{Section Two}
+\include{serial}
+
+\include{openmp}
+
+\include{mpi}
+
+\include{cuda}
+
+\include{strong_scaling}
+
+\include{weak_scaling}
+
 
 \end{document}
