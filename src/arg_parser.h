@@ -45,7 +45,7 @@ if (error != 0) { \
 #define OPT_STR_ARG(arg, var) if (!strcmp(argv[i], arg)) { \
     i++; \
     if (i < argc) { \
-        *var = argv[i]; \
+        *var = argv[i++]; \
     } else { \
         fprintf(stderr, "Error: Optional argument %s requires a value\n", argv[i - 1]); \
         return -1; \
