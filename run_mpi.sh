@@ -7,7 +7,7 @@
 # --- Configuration ---
 DIM=2048                    # Fixed dimension for Strong Scaling
 BASE_DIM_WEAK=1024          # Base dimension for Weak Scaling (1 thread)
-THREADS=(2 4 8)             # Thread counts to test
+THREADS=(2 3 4 5 6 7 8)             # Thread counts to test
 RUNS=3                      # Number of runs to average (Seeds/Iterations)
 RESULTS_DIR="results"
 
@@ -30,7 +30,7 @@ average_time() {
 # STRONG SCALING
 # Fixed Dim, Varying Threads
 # =============================================================================
-echo "Dim,Threads,Execution_Time,Speedup" > $STRONG_OUTPUT
+echo "Dim,Ranks,Execution_Time,Speedup" > $STRONG_OUTPUT
 
 echo "Running Strong Scaling (Fixed Dim: $DIM)..."
 
@@ -49,7 +49,7 @@ done
 # WEAK SCALING
 # Work scales with threads (N = BASE * threads^(1/3) for MatMul)
 # =============================================================================
-echo "Dim,Threads,Execution_Time,Scaled_Speedup" > $WEAK_OUTPUT
+echo "Dim,Ranks,Execution_Time,Scaled_Speedup" > $WEAK_OUTPUT
 
 echo -e "\nRunning Weak Scaling (Work grows with Threads)..."
 

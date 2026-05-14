@@ -207,7 +207,7 @@ def _x_label(x_col: str, fixed_threads: int | None) -> str:
     """
     if x_col == "Blocks":
         return f"Number of Blocks (T = {fixed_threads} threads)"
-    return "Number of Threads"
+    return f"Number of {x_col}"
 
 
 def plot_subplot(
@@ -235,6 +235,9 @@ def plot_subplot(
     """
 
     idx = np.argmax(N > limit)
+    if idx == 0:
+        idx = N.size
+
     s = fit_serial_fraction(N[:idx], speedup[:idx], law)
 
     N_fine = np.linspace(N.min(), N[idx - 1], 500)
