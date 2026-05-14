@@ -1,7 +1,7 @@
 CC       := gcc
 MPICC    := mpicc
 NVCC 	 := nvcc
-FLAGS    := -Wall -Wextra -O2
+FLAGS    := -Wall -Wextra -O3 -march=native
 NVFLAGS  := -O2
 OMPFLAGS := -fopenmp
 
