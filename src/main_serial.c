@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
     int dim;
     char* dest = NULL;
     const char* alg = "chunks";
-    int threshold = 48;
+    int threshold = 1024;
 
     CONTEXT(
         parse_args(argc, argv, &dim, &dest, &alg, &threshold),

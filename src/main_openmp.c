@@ -26,8 +26,8 @@ int main(int argc, char **argv) {
     int dim;
     int num_threads;
     char* dest = NULL;
-    const char* alg = "matmul_openmp";
-    int threshold = 256;
+    const char* alg = "chunks";
+    int threshold = 1024;
 
     CONTEXT(
         parse_args(argc, argv, &dim, &num_threads, &dest, &alg, &threshold), 
