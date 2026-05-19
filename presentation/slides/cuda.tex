@@ -70,3 +70,22 @@ for (int chunk_idx = id;
     \end{center}
     
 \end{frame}
+
+
+\begin{frame}[fragile]{CUDA}
+    \begin{columns}[T]
+        \begin{column}{0.45\textwidth}
+            Fast alternative
+            \begin{itemize}
+                \item Tile the matrices
+                \item Fixed block size
+                \item Copy to memory shared across threads
+                \item No strong and weak scaling
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \includegraphics[width=\textwidth]{Images/cuda_blazingly_fast.png}
+        \end{column}
+    \end{columns}
+    
+\end{frame}

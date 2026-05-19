@@ -1,4 +1,17 @@
 \begin{frame}{MPI}
-Rank 0 working as the orchestrator and rank 1 - N-1 as the workers. The orchestrator sends eahc worker a chunk of teh original two matrices 
-each worker recieves multiplies and retuens the resulting chunk. 
+    Orchestrator-worker model
+    \hfill
+    Rank 0
+    \begin{itemize}
+        \item Reads CLI arguments
+        \item Creates input matrices
+        \item Broadcasts\footnote{Doesn't actually use the MPI broadcast function} the input in slices
+        \item Aggregates chunks from workers into one output matrix    
+    \end{itemize}
+
+    Rank 1-N
+    \begin{itemize}
+        \item Receives slices of input matrices
+        \item Multiplies input slices, and sends the output back
+    \end{itemize}
 \end{frame}
