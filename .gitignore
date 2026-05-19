@@ -70,3 +70,4 @@ dkms.conf
 *.snm
 *.synctex.gz
 *.toc
+*.vrb
