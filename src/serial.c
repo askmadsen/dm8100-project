@@ -3,13 +3,25 @@
 #include <stddef.h>
 #include <stdio.h>
 
-void matmul(Matrix a, Matrix b, Matrix c) {
+void matmul_ikj(Matrix a, Matrix b, Matrix c) {
     for (int i = 0; i < c.rows; i++) {
         for (int k = 0; k < a.cols; k++) {
             float entry = *matrix_index(a, i, k);
             for (int j = 0; j < c.cols; j++) {
                 *matrix_index(c, i, j) += entry * *matrix_index(b, k, j);
             }
+        }
+    }
+}
+
+void matmul_ijk(Matrix a, Matrix b, Matrix c) {
+    for (int i = 0; i < c.rows; i++) {
+        for (int j = 0; j < c.cols; j++) {
+            float sum = 0;
+            for (int k = 0; k < a.cols; k++) {
+                sum += *matrix_index(a, i, k) * *matrix_index(b, k, j);
+            }
+            *matrix_index(c, i, j) = sum;
         }
     }
 }
@@ -28,7 +40,7 @@ void matmul_transposed(Matrix a, Matrix bT, Matrix c) {
 
 void matmul_chunks(Matrix a, Matrix b, Matrix c, int threshold) {
     if (a.rows + b.rows + c.cols <= threshold) {
-        matmul(a, b, c);
+        matmul_ikj(a, b, c);
     } else {
         Matrix a1 = up(left(a));
         Matrix a2 = up(right(a));

@@ -26,9 +26,9 @@ int main(int argc, char **argv) {
     char* dest = NULL;
     const char* alg = "chunks";
     int threshold = 48;
-    
+
     CONTEXT(
-        parse_args(argc, argv, &dim, &dest, &alg, &threshold), 
+        parse_args(argc, argv, &dim, &dest, &alg, &threshold),
         fprintf(stderr, "While parsing arguments\n")
     );
 
@@ -39,8 +39,10 @@ int main(int argc, char **argv) {
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    if (!strcmp(alg, "simple") || !strcmp(alg, "matmul")) {
-        matmul(a, b, c);
+    if (!strcmp(alg, "ikj") || !strcmp(alg, "matmul_ikj")) {
+        matmul_ikj(a, b, c);
+    } else if (!strcmp(alg, "ijk") || !strcmp(alg, "matmul_ijk")) {
+        matmul_ijk(a, b, c);
     } else if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_transposed")) {
         matrix_transpose(b);
         matmul_transposed(a, b, c);
