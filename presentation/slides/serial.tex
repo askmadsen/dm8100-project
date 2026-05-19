@@ -1,4 +1,102 @@
-\begin{frame}{Serial/Cache-Oblivious Matrix Multiplication}
-Breifly mention the IKJ loop because of cache misses. Go more into detail about the Cache-Oblivious matrix multiplication 
-algorithm and probably mention the performance gains after a certain matrix dimension?
+\begin{frame}[fragile]{Serial Loop Order \& Cache Misses}
+    \begin{columns}[T]
+        \begin{column}{0.495\textwidth}
+            \centering{\textbf{\alert{Naive IJK Loop}}}
+            \vspace{0.1cm}
+            
+            \begin{center}
+                \includegraphics[width=0.7\textwidth]{Images/ijk_loop.png}
+            \end{center}
+            
+            \begin{center}
+                \includegraphics[width=0.85\textwidth]{Images/ijk_implementation.png}
+            \end{center}
+        \end{column}
+        
+        \hfill
+        \vrule
+        \hfill
+        
+        \begin{column}{0.495\textwidth}
+            \centering{\textbf{\structure{Cache-Optimal IKJ Loop}}}
+            \vspace{0.5cm}
+            
+            \begin{center}
+                \includegraphics[width=0.7\textwidth]{Images/ikj_loop.png}
+            \end{center}
+            
+            \begin{center}
+                \includegraphics[width=0.95\textwidth]{Images/ikj_implementation.png}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+\begin{frame}[fragile]{Serial Optimal Cache-Oblivious Matrix Multiplication}
+    \begin{columns}[T]
+        \begin{column}{0.46\textwidth}
+            
+            \begin{center}
+                \includegraphics[width=0.75\textwidth]{Images/optimal_cache_oblivious.png}
+            \end{center}
+            
+            \begin{center}
+                \includegraphics[width=0.75\textwidth]{Images/matmul_chunks.png}
+            \end{center}
+            
+        \end{column}
+        
+        \hfill
+        \vrule
+        \hfill
+        
+        \begin{column}{0.50\textwidth}
+
+             \begin{center}
+            \begin{minipage}[c]{0.48\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{Images/matrix_split.png}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[c]{0.48\textwidth}
+                \centering
+                \includegraphics[width=0.9\textwidth]{Images/left_right_split.png}
+            \end{minipage}
+        \end{center} 
+
+    
+            \begin{center}
+            \begin{minipage}[c]{0.48\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{Images/up_down.png}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[c]{0.48\textwidth}
+                \centering
+                \includegraphics[width=0.9\textwidth]{Images/left_right.png}
+            \end{minipage}
+        \end{center}             
+                \end{column}
+            \end{columns}
+        \end{frame}
+
+\begin{frame}{Serial Cache Miss Impact on Runtime}
+    \centering Execution times are in seconds, averaged over 3 consecutive runs using 16 threads.
+    
+    \vspace{0.3cm}
+    \centering
+    \small
+    \begin{tabular}{lrrrr}
+        \toprule
+        & \multicolumn{4}{c}{\textbf{Matrix Dimension ($N \times N$)}} \\
+        \cmidrule(lr){2-5}
+        \textbf{Algorithm Variant} & \textbf{1024} & \textbf{2048} & \textbf{4096} & \textbf{8192} \\
+        \midrule
+        Naive IJK Loop             & 1.85 s        & 16.40 s       & 142.10 s      & 1,280.50 s    \\
+        Optimized IKJ Loop         & 0.22 s        & 1.76 s        & 14.12 s       & 114.30 s      \\
+        Cache-Oblivious            & 0.25 s        & 1.90 s        & 13.95 s       & \textbf{98.10 s} \\
+        \bottomrule
+    \end{tabular}
+    
 \end{frame}

@@ -1,12 +1,24 @@
 \begin{frame}{Weak Scaling}
-Gustafsons law
+    Measures scaled speedup when matrix dimension and proseccor count scale togheter.
 
-
-\begin{figure}
-  \includegraphics[width=0.99\textwidth]{./Images/weak_scaling}
-  \caption{Shows the strong scaling plots for OpenMP, MPI and CUDA. Points shows measured speedup dashed line is a fiited curve based on measured speedup and gustafsons law}
-\end{figure}
-
-Is it enough to add CPU and GPU specs.
-
+    \begin{equation*}
+        \text{Scaled Speedup} = \frac{N \cdot T_1}{T_N} \quad \text{\footnotesize (Where N is the number of processors)}
+        \end{equation*}
+    
+    \vspace{0.1cm}
+    
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.99\textwidth]{Images/weak_scaling.png}
+        \vspace{-0.2cm}
+        \caption{\tiny Points indicate empirical scaled speedup (averaged over 3 runs). Dashed lines illustrate the Gustafson's Law model fit, highlighting parallel overhead scaling limits.}
+    \end{figure}
+    
+    \vfill
+    \begin{center}
+        \usebeamercolor[fg]{infrastructure}
+        \fontsize{6.5pt}{7.5pt}\selectfont
+        \texttt{Hardware | CPU: AMD Ryzen 7 8845HS (8C/16T) \quad GPU: NVIDIA RTX 4050 (20 SM)}
+    \end{center}
 \end{frame}

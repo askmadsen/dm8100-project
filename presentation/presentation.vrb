@@ -1,26 +1,26 @@
-\begin{frame}[fragile]{CUDA}
-    \begin{columns}[T]
+\frametitle{CUDA}
+\begin{columns}[T]
         \begin{column}{0.48\textwidth}
-            
+
             \vspace{0.1cm}
             \begin{center}
                 \includegraphics[width=0.7\textwidth]{Images/gpu_architecture.png}
                 \includegraphics[width=0.7\textwidth]{Images/streaming_multiprocessor.png}
             \end{center}
         \end{column}
-        
+
         \hfill
         \vrule
         \hfill
-        
+
         \begin{column}{0.48\textwidth}
             \fontsize{6.5pt}{7.5pt}\selectfont
             \begin{semiverbatim}
 int total_threads = blockDim.x * gridDim.x;
 int id = threadIdx.x + blockDim.x * blockIdx.x;
 
-for (int workIndex = id; 
-     workIndex < a.rows * a.cols; 
+for (int workIndex = id;
+     workIndex < a.rows * a.cols;
      workIndex += total_threads) \{
   // Row-Major flattened execution
   int i = workIndex / a.cols;
@@ -28,12 +28,12 @@ for (int workIndex = id;
   /* ... Dot product using transposed B ... */
 \}
             \end{semiverbatim}
-            
+
             \vspace{0.2cm}
             \begin{semiverbatim}
 // Threads process localized sub-matrix blocks
-for (int chunk_idx = id; 
-     chunk_idx < chunk_count; 
+for (int chunk_idx = id;
+     chunk_idx < chunk_count;
      chunk_idx += total_threads) \{
   MatrixChunk chunk = chunk_from_index(...);
   /* ... Localized loop over chunk boundaries ... */
@@ -41,4 +41,3 @@ for (int chunk_idx = id;
             \end{semiverbatim}
         \end{column}
     \end{columns}
-\end{frame}
