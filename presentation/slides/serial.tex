@@ -38,12 +38,10 @@
         \begin{column}{0.46\textwidth}
             
             \begin{center}
-                \includegraphics[width=0.75\textwidth]{Images/optimal_cache_oblivious.png}
+                \includegraphics[width=0.95\textwidth]{Images/optimal_cache_oblivious.png}
             \end{center}
             
-            \begin{center}
-                \includegraphics[width=0.75\textwidth]{Images/matmul_chunks.png}
-            \end{center}
+           
             
         \end{column}
         
@@ -52,37 +50,15 @@
         \hfill
         
         \begin{column}{0.50\textwidth}
-
              \begin{center}
-            \begin{minipage}[c]{0.48\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{Images/matrix_split.png}
-            \end{minipage}
-            \hfill
-            \begin{minipage}[c]{0.48\textwidth}
-                \centering
-                \includegraphics[width=0.9\textwidth]{Images/left_right_split.png}
-            \end{minipage}
-        \end{center} 
-
-    
-            \begin{center}
-            \begin{minipage}[c]{0.48\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{Images/up_down.png}
-            \end{minipage}
-            \hfill
-            \begin{minipage}[c]{0.48\textwidth}
-                \centering
-                \includegraphics[width=0.9\textwidth]{Images/left_right.png}
-            \end{minipage}
-        \end{center}             
-                \end{column}
-            \end{columns}
-        \end{frame}
+                \includegraphics[width=0.95\textwidth]{Images/matmul_chunks.png}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
 
 \begin{frame}{Serial Cache Miss Impact on Runtime}
-    \centering Execution times are in seconds, averaged over 3 consecutive runs using 16 threads.
+    \centering Execution times are in seconds, averaged over 3 consecutive runs.
     
     \vspace{0.3cm}
     \centering
@@ -93,10 +69,17 @@
         \cmidrule(lr){2-5}
         \textbf{Algorithm Variant} & \textbf{1024} & \textbf{2048} & \textbf{4096} & \textbf{8192} \\
         \midrule
-        Naive IJK Loop             & 1.85 s        & 16.40 s       & 142.10 s      & 1,280.50 s    \\
-        Optimized IKJ Loop         & 0.22 s        & 1.76 s        & 14.12 s       & 114.30 s      \\
-        Cache-Oblivious            & 0.25 s        & 1.90 s        & 13.95 s       & \textbf{98.10 s} \\
+        IJK Loop          & 6.11 s        & 61.28 s       & ---           & ---      \\
+        Transposed        & 0.65 s        & 5.48 s        & 47.31 s       & ---      \\
+        IKJ Loop          & 0.14 s        & 2.08 s        & 15.73 s       & 140.13 s \\
+        Chunks            & 0.26 s        & 2.13 s        & 17.71 s       & 144.02 s \\
         \bottomrule
     \end{tabular}
+
+    \begin{center}
+        \usebeamercolor[fg]{infrastructure}
+        \fontsize{6.5pt}{7.5pt}\selectfont
+        \texttt{Hardware | WSL2 \quad  CPU: AMD Ryzen 7 8845HS (8C/16T) \quad GPU: NVIDIA RTX 4050 (20 SM)}
+    \end{center}
     
 \end{frame}
