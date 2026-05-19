@@ -8,14 +8,14 @@
 #include "arg_parser.h"
 
 
-int parse_args(int argc, char** argv, int* dim, char** dest, const char** alg, int* chunk_limit) {
+int parse_args(int argc, char** argv, int* dim, char** dest, const char** alg, int* threshold) {
     ARG_INIT()
     INT_ARG(dim)
 
     OPT_ARGS(
         OPT_STR_ARG("--dest", dest)
         OPT_STR_ARG("--alg", alg)
-        OPT_INT_ARG("--chunk-limit", chunk_limit)
+        OPT_INT_ARG("--threshold", threshold)
     )
 
     return 0;
@@ -25,10 +25,10 @@ int main(int argc, char **argv) {
     int dim;
     char* dest = NULL;
     const char* alg = "chunks";
-    int chunk_limit = 48;
+    int threshold = 48;
     
     CONTEXT(
-        parse_args(argc, argv, &dim, &dest, &alg, &chunk_limit), 
+        parse_args(argc, argv, &dim, &dest, &alg, &threshold), 
         fprintf(stderr, "While parsing arguments\n")
     );
 
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
         matrix_transpose(b);
         matmul_transposed(a, b, c);
     } else if (!strcmp(alg, "chunks") || !strcmp(alg, "matmul_chunks")) {
-        matmul_chunks(a, b, c);
+        matmul_chunks(a, b, c, threshold);
     } else {
         fprintf(stderr, "Error: No algorithm named %s\n", alg);
         return 1;

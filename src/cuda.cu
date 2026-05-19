@@ -70,7 +70,9 @@ __global__ void matmul_cuda_transposed(Matrix a, Matrix bT, Matrix c) {
 __global__ void matmul_cuda_chunks(Matrix a, Matrix b, Matrix c, int chunk_size) {
     int total_threads = blockDim.x * gridDim.x;
     int work_index = threadIdx.x + blockDim.x * blockIdx.x;
-    int chunk_count = ((c.rows - 1) / chunk_size + 1) * ((c.cols - 1) / chunk_size + 1);
+    int chunk_count_row = ((c.rows - 1) / chunk_size + 1);
+    int chunk_count_col = ((c.cols - 1) / chunk_size + 1);
+    int chunk_count = chunk_count_row * chunk_count_col;
 
     for (int chunk_index = work_index; chunk_index < chunk_count; chunk_index += total_threads) {
         MatrixChunk chunk = chunk_from_index(chunk_index, c.rows, c.cols, chunk_size);
@@ -82,5 +84,45 @@ __global__ void matmul_cuda_chunks(Matrix a, Matrix b, Matrix c, int chunk_size)
                 }
             }
         }
+    }
+}
+
+#define TILE 32
+
+__global__ void matmul_cuda_chunks2(Matrix a, Matrix b, Matrix c) {
+    int i = blockIdx.y * TILE + threadIdx.y;
+    int j = blockIdx.x * TILE + threadIdx.x;
+
+    __shared__ float TILE_A[TILE][TILE];
+    __shared__ float TILE_B[TILE][TILE];
+
+    float sum = 0.0;
+
+    for (int t = 0; t < b.rows; t += TILE) {
+        if (i < c.rows && (t + threadIdx.x) < a.cols)
+            TILE_A[threadIdx.y][threadIdx.x] =
+                a.ptr[i * a.cols + (t + threadIdx.x)];
+        else
+            TILE_A[threadIdx.y][threadIdx.x] = 0.0;
+
+        if (j < c.cols && (t + threadIdx.y) < b.rows)
+            TILE_B[threadIdx.y][threadIdx.x] =
+                b.ptr[(t + threadIdx.y) * b.cols + j];
+        else
+            TILE_B[threadIdx.y][threadIdx.x] = 0.0;
+
+        __syncthreads();
+
+        #pragma unroll
+        for (int k = 0; k < TILE; ++k)
+        {
+            sum += TILE_A[threadIdx.y][k] * TILE_B[k][threadIdx.x];
+        }
+
+        __syncthreads();
+    }
+    
+    if (i < c.rows && j < c.cols) {
+        c.ptr[i * c.cols + j] = sum;
     }
 }

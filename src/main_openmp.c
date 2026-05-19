@@ -7,7 +7,7 @@
 #include "arg_parser.h"
 
 
-int parse_args(int argc, char** argv, int* dim, int* num_threads, char** dest, const char** alg) {
+int parse_args(int argc, char** argv, int* dim, int* num_threads, char** dest, const char** alg, int* threshold) {
     ARG_INIT()
     INT_ARG(dim)
     INT_ARG(num_threads)
@@ -15,6 +15,7 @@ int parse_args(int argc, char** argv, int* dim, int* num_threads, char** dest, c
     OPT_ARGS(
         OPT_STR_ARG("--dest", dest)
         OPT_STR_ARG("--alg", alg)
+        OPT_INT_ARG("--threshold", threshold)
     )
 
     return 0;
@@ -26,8 +27,12 @@ int main(int argc, char **argv) {
     int num_threads;
     char* dest = NULL;
     const char* alg = "matmul_openmp";
+    int threshold = 256;
 
-    CONTEXT(parse_args(argc, argv, &dim, &num_threads, &dest, &alg), fprintf(stderr, "While parsing arguments for main_openmp\n"));
+    CONTEXT(
+        parse_args(argc, argv, &dim, &num_threads, &dest, &alg, &threshold), 
+        fprintf(stderr, "While parsing arguments for main_openmp\n")
+    );
 
     omp_set_num_threads(num_threads);
 
@@ -38,19 +43,16 @@ int main(int argc, char **argv) {
 
     struct timespec start, end;
 
-
     clock_gettime(CLOCK_MONOTONIC, &start);
 
     if (!strcmp(alg, "simple") || !strcmp(alg, "matmul_openmp")) {
         matmul_openmp(a, b, c);
-    }
-
-    else if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_openmp_transposed")) {
+    } else if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_openmp_transposed")) {
         matrix_transpose(b);
         matmul_openmp_transposed(a, b, c);
-    }
-
-    else {
+    } else if (!strcmp(alg, "chunks") || !strcmp(alg, "matmul_openmp_chunks")) {
+        matmul_openmp_chunks(a, b, c, threshold);
+    } else {
         fprintf(stderr, "Matmul algorithm %s is not implemented \n", alg);
         return -1;
     }
