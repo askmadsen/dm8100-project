@@ -2,7 +2,7 @@ CC       := gcc
 MPICC    := mpicc
 NVCC 	 := nvcc
 FLAGS    := -Wall -Wextra -O3 -march=native
-NVFLAGS  := -O2
+NVFLAGS  := -O3 -use_fast_math
 OMPFLAGS := -fopenmp
 
 SHARED = obj/matrix.o obj/arg_parser.o
@@ -15,7 +15,7 @@ all_except_cuda: target/main_serial target/main_openmp target/main_correctness t
 target/main_serial: obj/main_serial.o $(SHARED) obj/serial.o | target
 	$(CC) $^ -lm -o $@
 
-target/main_openmp: obj/main_openmp.o $(SHARED) obj/openmp.o | target
+target/main_openmp: obj/main_openmp.o $(SHARED) obj/openmp.o obj/serial.o | target
 	$(CC) $^ -lm $(OMPFLAGS) -o $@
 
 target/main_correctness: obj/main_correctness.o $(SHARED) obj/serial.o obj/openmp.o | target

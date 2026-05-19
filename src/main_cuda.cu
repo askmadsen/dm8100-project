@@ -10,6 +10,8 @@
 #include "cuda.h"
 #include "arg_parser.h"
 
+#define TILE 32
+
 int parse_args(int argc, char** argv, int* dim, int* threads, int* blocks, int* chunk_size, char** dest, const char** alg) {
     ARG_INIT()
     INT_ARG(dim)
@@ -47,7 +49,6 @@ int main(int argc, char** argv) {
     char* dest = NULL;
     const char* alg = "matmul_cuda_chunks";
 
-
     parse_args(argc, argv, &dim, &threads, &blocks, &chunk_size, &dest, &alg);
 
     float* a_ptr;
@@ -79,9 +80,6 @@ int main(int argc, char** argv) {
 
     struct timespec start, end;
 
-
-
-
     cudaMemcpy(a_dev.ptr, a.ptr, dim*dim*sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(b_dev.ptr, b.ptr, dim*dim*sizeof(float), cudaMemcpyHostToDevice);
     cudaMemset(c_dev.ptr, 0, dim*dim*sizeof(float));
@@ -90,14 +88,17 @@ int main(int argc, char** argv) {
 
     if (!strcmp(alg, "chunks") || !strcmp(alg, "matmul_cuda_chunks")) {
         matmul_cuda_chunks<<<blocks, threads>>>(a_dev, b_dev, c_dev, chunk_size);
-    }
-
-    else if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_cuda_transposed")) {
+    } else if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_cuda_transposed")) {
         matrix_transpose(b);
         matmul_cuda_transposed<<<blocks, threads>>>(a_dev, b_dev, c_dev);
-    }
-
-    else {
+    } else if (!strcmp(alg, "chunks2")) {
+        dim3 block(TILE, TILE);
+        dim3 grid(
+            (dim + TILE - 1) / TILE,
+            (dim + TILE - 1) / TILE
+        );
+        matmul_cuda_chunks2<<<grid, block>>>(a_dev, b_dev, c_dev);
+    } else {
         fprintf(stderr, "Matmul algorithm %s is not implemented \n", alg);
         return -1;
     }
