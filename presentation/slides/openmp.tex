@@ -39,17 +39,19 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{OpenMP - Blocks}
-    \begin{column}{0.45\textwidth}
-        \begin{itemize}
-            \item Split the matrices into fixed size blocks
-            \item Each thread works on a block at a time
-            \item Copy memory to stack allocated arrays
-        \end{itemize}
-    \end{column}
-    \begin{column}{0.55\textwidth}
-        \includegraphics[width=\textwidth]{Images/cuda_blazingly_fast.png}
-    \end{column}
+\begin{frame}[fragile]{OpenMP}
+    \begin{columns}[T]
+        \begin{column}{0.45\textwidth}
+            \begin{itemize}
+                \item Split the matrices into fixed size blocks
+                \item Each thread works on a block at a time
+                \item Copy memory to stack allocated arrays
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \includegraphics[width=\textwidth]{Images/cuda_blazingly_fast.png}
+        \end{column}
+    \end{columns}
 \end{frame}
 
 \begin{frame}{OpenMP}

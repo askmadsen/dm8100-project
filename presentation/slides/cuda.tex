@@ -1,15 +1,21 @@
 \begin{frame}[fragile]{CUDA}
     \begin{columns}[T]
-        \begin{column}{0.35\textwidth}
+        \begin{column}{0.5\textwidth}
             \begin{itemize}
-                \item 
+                \item Matrix B is transposed
+                \item Each thread...
+                \begin{itemize}
+                    \item Starts at an entry in C.
+                    \item Calculates the value of that entry.
+                    \item Moves on to the next entry row-wise using thread\_count.
+                \end{itemize}
             \end{itemize}
         \end{column}
         
         \hfill
         \hfill
         
-        \begin{column}{0.65\textwidth}
+        \begin{column}{0.5\textwidth}
             \begin{center}
                 \includegraphics[width=\textwidth]{Images/cuda_transposed.png}
             \end{center}
@@ -20,21 +26,17 @@
 
 \begin{frame}[fragile]{CUDA}
     \begin{columns}[T]
-        \begin{column}{0.48\textwidth}
-            
-            \vspace{0.1cm}
+        \begin{column}{0.4\textwidth}
+            \begin{itemize}
+                \item Each thread calculates a small chunk ($n \approx 4$)
+                \item Slightly faster
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.6\textwidth}
             \begin{center}
                 \includegraphics[width=0.7\textwidth]{Images/cuda_chunks.png}
             \end{center}
-        \end{column}
-        
-        \hfill
-        \hfill
-        
-        \begin{column}{0.48\textwidth}
-            \begin{itemize}
-                \item Some stuff
-            \end{itemize}
         \end{column}
     \end{columns}
 \end{frame}
@@ -75,16 +77,12 @@
         \midrule
         Transposed         & 0.19 s        & 1.50 s        & 12.91 s       & 100.55 s      \\
         Chunks             & 0.17 s        & 1.50 s        & 11.83 s       & 99.80 s       \\
-        Chunks2            & 0.02 s        & 0.15 s        & 1.15 s        & 9.47 s        \\
+        Blocks             & 0.02 s        & 0.15 s        & 1.15 s        & 9.47 s        \\
         \bottomrule
     \end{tabular}
     \caption{Execution times are in seconds, averaged over 3 consecutive runs using 256 threads per block.
 }
     \end{figure}
-
-    \begin{itemize}
-        \item Some stuff about performance
-    \end{itemize}
 
     \begin{center}
         \usebeamercolor[fg]{infrastructure}
