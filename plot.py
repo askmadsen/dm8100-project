@@ -18,7 +18,7 @@ For CUDA files both Threads and Blocks are present; the x-axis uses Blocks and
 the thread count is shown in the axis label.
 
 Usage:
-    python plot.py --input_dir results --output_dir plots --sm-count 20 --max-threads-mp 16 --max-threads-mpi 6
+    python plot.py --input_dir results --output_dir plots --sm-count 20 --max-threads-mp 16 --max-threads-mpi 8
     python plot.py --help
 """
 
@@ -249,9 +249,11 @@ def plot_subplot(
 
     ax.plot(N, speedup, "o", zorder=3, color = color_dots)
     ax.plot(N_fine, fitted, "--", zorder=2, color = color_line)
-    ax.set_title(title)
-    ax.set_xlabel(_x_label(x_col, fixed_threads))
-    ax.set_ylabel(y_label)
+    ax.set_title(title, fontsize = 16, fontweight="bold")
+    ax.set_xlabel(_x_label(x_col, fixed_threads), fontsize = 14)
+    if title == "OpenMP":
+        ax.set_ylabel(y_label, fontsize = 14)
+    ax.tick_params(labelsize=12)
     ax.grid(True, linestyle=":", alpha=0.5)
 
 
@@ -280,7 +282,7 @@ def build_figure(
         out_path (Path):                   File path where the figure is saved.
     """
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-    fig.suptitle(fig_title, fontsize=14, fontweight="bold")
+    #fig.suptitle(fig_title, fontsize=14, fontweight="bold")
 
     for ax, dataset, subtitle in zip(axes, datasets, subtitles):
         if dataset is None:
@@ -299,7 +301,7 @@ def build_figure(
             plot_subplot(ax, N, speedup, x_col, fixed_threads, law, limit, subtitle, y_label)
 
     fig.tight_layout()
-    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    fig.savefig(out_path, dpi=600, bbox_inches="tight")
     plt.close(fig)
     print(f"Saved: {out_path}")
 
