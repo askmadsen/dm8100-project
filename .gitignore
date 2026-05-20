@@ -71,3 +71,6 @@ dkms.conf
 *.synctex.gz
 *.toc
 *.vrb
+
+# .zip
+dm8100-project.zip
