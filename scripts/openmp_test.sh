@@ -32,7 +32,7 @@ echo "Dim,Threads,Algorithm,Execution_Time" > $OPENMP_OUTPUT
 # Get T1 (Time for 1 thread) to calculate speedup
 for dim in "${DIMS[@]}"; do
     for threads in "${THREADS[@]}"; do
-        for alg in "simple" "transposed" "chunks"; do
+        for alg in "blocks"; do
             avg_time=$(average_time "./target/main_openmp $dim $threads --alg $alg")
             echo "$dim,$threads,$alg,$avg_time" >> $OPENMP_OUTPUT
             printf "  Dim: %-5s | Threads: %-5s | Algorithm: %-10s | Time: %10ss\n" \
