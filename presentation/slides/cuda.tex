@@ -1,20 +1,18 @@
 \begin{frame}[fragile]{CUDA}
     \begin{columns}[T]
-        \begin{column}{0.48\textwidth}
-            
-            \vspace{0.1cm}
-            \begin{center}
-                \includegraphics[width=0.7\textwidth]{Images/cuda_transposed.png}
-            \end{center}
+        \begin{column}{0.35\textwidth}
+            \begin{itemize}
+                \item 
+            \end{itemize}
         \end{column}
         
         \hfill
         \hfill
         
-        \begin{column}{0.48\textwidth}
-            \begin{itemize}
-                \item some stuff
-            \end{itemize}
+        \begin{column}{0.65\textwidth}
+            \begin{center}
+                \includegraphics[width=\textwidth]{Images/cuda_transposed.png}
+            \end{center}
         \end{column}
     \end{columns}
 \end{frame}
@@ -47,12 +45,11 @@
 \begin{frame}[fragile]{CUDA}
     \begin{columns}[T]
         \begin{column}{0.45\textwidth}
-            Fast alternative
             \begin{itemize}
-                \item Tile the matrices
-                \item Fixed block size
-                \item Copy to memory shared across threads
-                \item No strong and weak scaling
+                \item Same idea as OpenMP blocks.
+                \item Each GPU block works on one matrix block.
+                \item Shared memory (\_\_shared)
+                \item Thread synchronization (\_\_syncthreads)
             \end{itemize}
         \end{column}
         \begin{column}{0.55\textwidth}

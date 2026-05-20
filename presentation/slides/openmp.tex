@@ -1,60 +1,56 @@
 \begin{frame}[fragile]{OpenMP}
     \begin{columns}[T]
-        \begin{column}{0.48\textwidth}
-
-             
-            \begin{center}
-                \includegraphics[width=0.99\textwidth]{Images/matmul_openmp.png}
-           \end{center}
-            
-           \begin{itemize}
-            \item hello
-           \end{itemize}
-
-            
-            
+        \begin{column}{0.35\textwidth}
+            \begin{itemize}
+                \item \#pragma omp
+                \item collapse?
+                \item schedule?
+            \end{itemize}
         \end{column}
         
         \hfill
         \hfill
         
-        \begin{column}{0.48\textwidth}
-            
-          \begin{itemize}
-            \item hello 2
-          \end{itemize}
-            
+        \begin{column}{0.65\textwidth}
+            \begin{center}
+                \includegraphics[width=\textwidth]{Images/matmul_openmp.png}
+            \end{center}
         \end{column}
     \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]{OpenMP}
     \begin{columns}[T]
-        \begin{column}{0.48\textwidth}
-
-             
+        \begin{column}{0.35\textwidth}
             \begin{itemize}
-                \item hello
+                \item Calls matmul\_openmp instead of matmul
+                \item Recursion itself is not parallel
             \end{itemize}
-
-            
-            
         \end{column}
         
         \hfill
         \hfill
         
-        \begin{column}{0.48\textwidth}
-            
+        \begin{column}{0.65\textwidth}
            \begin{center}
-                \includegraphics[width=0.99\textwidth]{Images/openmp_chunks.png}
+                \includegraphics[width=\textwidth]{Images/openmp_chunks.png}
            \end{center}
-            
-            
         \end{column}
     \end{columns}
 \end{frame}
 
+\begin{frame}[fragile]{OpenMP - Blocks}
+    \begin{column}{0.45\textwidth}
+        \begin{itemize}
+            \item Split the matrices into fixed size blocks
+            \item Each thread works on a block at a time
+            \item Copy memory to stack allocated arrays
+        \end{itemize}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+        \includegraphics[width=\textwidth]{Images/cuda_blazingly_fast.png}
+    \end{column}
+\end{frame}
 
 \begin{frame}{OpenMP}
     
@@ -74,10 +70,6 @@
     \end{tabular}
     \caption{Execution times for different OpenMP matrix multiplication algorithms, averaged over 3 consecutive runs using 12 threads.}
     \end{figure}
-
-    \begin{itemize}
-        \item A breif comment or two about the results
-    \end{itemize}
 
     \begin{center}
         \usebeamercolor[fg]{infrastructure}
