@@ -76,6 +76,10 @@ int main(int argc, char** argv) {
     matrix_fill(a, 7);
     matrix_fill(b, 13);
 
+    if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_cuda_transposed")) {
+        matrix_transpose(b);
+    }
+
     struct timespec start, end;
 
     cudaMemcpy(a_dev.ptr, a.ptr, dim*dim*sizeof(float), cudaMemcpyHostToDevice);
@@ -87,7 +91,6 @@ int main(int argc, char** argv) {
     if (!strcmp(alg, "chunks") || !strcmp(alg, "matmul_cuda_chunks")) {
         matmul_cuda_chunks<<<blocks, threads>>>(a_dev, b_dev, c_dev, chunk_size);
     } else if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_cuda_transposed")) {
-        matrix_transpose(b);
         matmul_cuda_transposed<<<blocks, threads>>>(a_dev, b_dev, c_dev);
     } else if (!strcmp(alg, "blocks") || !strcmp(alg, "matmul_cuda_blocks")) {
         dim3 block(TILE, TILE);
