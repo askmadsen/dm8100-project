@@ -75,13 +75,13 @@
         \cmidrule(lr){2-5}
         \textbf{Algorithm Variant} & \textbf{2048} & \textbf{4096} & \textbf{8192} & \textbf{16384}  \\
         \midrule
-        Transposed         & 0.19 s        & 1.50 s        & 12.91 s       & 100.55 s      \\
+        Transposed\footnote{Does not account for matrix transpose time}         & 0.18 s        & 1.45 s        & 12.36 s       & 96.68 s      \\
         Chunks             & 0.17 s        & 1.50 s        & 11.83 s       & 99.80 s       \\
         Blocks             & 0.02 s        & 0.15 s        & 1.15 s        & 9.47 s        \\
         \bottomrule
     \end{tabular}
     \caption{Execution times are in seconds, averaged over 3 consecutive runs using 256 threads per block.
-}
+} 
     \end{figure}
 
     \begin{center}
