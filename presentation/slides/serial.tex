@@ -1,4 +1,4 @@
-\begin{frame}[fragile]{Serial Loop Order \& Cache Misses}
+\begin{frame}[fragile]{Serial}
     \begin{columns}[T]
         \begin{column}{0.495\textwidth}
             \centering{\textbf{\alert{Naive IJK Loop}}}
@@ -11,10 +11,16 @@
             \begin{center}
                 \includegraphics[width=0.85\textwidth]{Images/ijk_implementation.png}
             \end{center}
+
+            \begin{itemize}
+                \item One stick or or two
+            \end{itemize}
+
         \end{column}
+
+        
         
         \hfill
-        \vrule
         \hfill
         
         \begin{column}{0.495\textwidth}
@@ -28,12 +34,17 @@
             \begin{center}
                 \includegraphics[width=0.95\textwidth]{Images/ikj_implementation.png}
             \end{center}
+
+            \begin{itemize}
+                \item One stick ord or two
+            \end{itemize}
+
         \end{column}
     \end{columns}
 \end{frame}
 
 
-\begin{frame}[fragile]{Serial Optimal Cache-Oblivious Matrix Multiplication}
+\begin{frame}[fragile]{Serial}
     \begin{columns}[T]
         \begin{column}{0.46\textwidth}
             
@@ -41,12 +52,13 @@
                 \includegraphics[width=0.95\textwidth]{Images/optimal_cache_oblivious.png}
             \end{center}
             
-           
+           \begin{itemize}
+            \item Things
+           \end{itemize}
             
         \end{column}
         
         \hfill
-        \vrule
         \hfill
         
         \begin{column}{0.50\textwidth}
@@ -57,12 +69,12 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}{Serial Cache Miss Impact on Runtime}
-    \centering Execution times are in seconds, averaged over 3 consecutive runs.
+\begin{frame}{Serial}
     
     \vspace{0.3cm}
     \centering
     \small
+    \begin{figure}
     \begin{tabular}{lrrrr}
         \toprule
         & \multicolumn{4}{c}{\textbf{Matrix Dimension ($N \times N$)}} \\
@@ -72,9 +84,15 @@
         IJK Loop          & 6.11 s        & 61.28 s       & ---           & ---      \\
         Transposed        & 0.65 s        & 5.48 s        & 47.31 s       & ---      \\
         IKJ Loop          & 0.14 s        & 2.08 s        & 15.73 s       & 140.13 s \\
-        Chunks            & 0.26 s        & 2.13 s        & 17.71 s       & 144.02 s \\
+        Chunks            & 0.08 s        & 0.64 s        & 5.51 s        & 48.72  s \\
         \bottomrule
     \end{tabular}
+    \caption{Execution times for different serial matrix multiplication algorithms, averaged over 3 consecutive runs.}
+    \end{figure}
+
+    \begin{itemize}
+        \item Maybe one or two observations from teh results??
+    \end{itemize}
 
     \begin{center}
         \usebeamercolor[fg]{infrastructure}
