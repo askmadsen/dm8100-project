@@ -7,7 +7,7 @@
 # --- Configuration ---
 DIM=2048                    # Fixed dimension for Strong Scaling
 BASE_DIM_WEAK=1024          # Base dimension for Weak Scaling (1 thread)
-THREADS=(1 2 4 8 12 16 20 28) # Thread counts to test
+THREADS=(1 2 4 8 12 16) # Thread counts to test
 RUNS=3                      # Number of runs to average (Seeds/Iterations)
 RESULTS_DIR="results"
 

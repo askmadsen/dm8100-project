@@ -4,7 +4,7 @@
 DIM_STRONG=2048                 # Fixed dimension for Strong Scaling
 BASE_DIM_WEAK=2048              # Base dimension for Weak Scaling (1 block)
 FIXED_THREADS=256               # Fixed GPU Thread number
-BLOCK_ARRAY=(1 2 4 8 12 16 20 24 32)     # Block counts to test
+BLOCK_ARRAY=(1 2 4 8 12 16 20)     # Block counts to test
 RUNS=3
 RESULTS_DIR="results"
 
@@ -37,10 +37,10 @@ echo "Dim,Blocks,Threads,Execution_Time,Speedup" > $STRONG_OUTPUT
 echo "Starting CUDA Strong Scaling (Fixed Dim: $DIM_STRONG)..."
 
 # T1 Baseline: 1 Block
-T1_STRONG=$(average_time "./target/main_cuda $DIM_STRONG --threads $FIXED_THREADS  --blocks 1")
+T1_STRONG=$(average_time "./target/main_cuda $DIM_STRONG --threads $FIXED_THREADS  --blocks 1 --alg chunks")
 
 for blocks in "${BLOCK_ARRAY[@]}"; do
-    avg_time=$(average_time "./target/main_cuda $DIM_STRONG --threads $FIXED_THREADS --blocks $blocks")
+    avg_time=$(average_time "./target/main_cuda $DIM_STRONG --threads $FIXED_THREADS --blocks $blocks --alg chunks")
     speedup=$(awk "BEGIN {printf \"%.6f\", $T1_STRONG / $avg_time}")
 
     echo "$DIM_STRONG,$blocks,$FIXED_THREADS,$avg_time,$speedup" >> $STRONG_OUTPUT
@@ -55,7 +55,7 @@ echo "Dim,Blocks,Threads,Execution_Time,Scaled_Speedup" > $WEAK_OUTPUT
 echo -e "\nStarting CUDA Weak Scaling..."
 
 # Baseline for Weak Scaling (1 Block)
-T1_WEAK=$(average_time "./target/main_cuda $BASE_DIM_WEAK --threads $FIXED_THREADS --blocks 1")
+T1_WEAK=$(average_time "./target/main_cuda $BASE_DIM_WEAK --threads $FIXED_THREADS --blocks 1 --alg chunks")
 
 for blocks in "${BLOCK_ARRAY[@]}"; do
 
@@ -65,7 +65,7 @@ for blocks in "${BLOCK_ARRAY[@]}"; do
     # Round dim to nearest multiple of 128
     current_dim=$(round_to_128 $raw_dim)
 
-    avg_time=$(average_time "./target/main_cuda $current_dim --threads $FIXED_THREADS --blocks $blocks")
+    avg_time=$(average_time "./target/main_cuda $current_dim --threads $FIXED_THREADS --blocks $blocks --alg chunks")
 
     # Scaled Speedup calculation
     scaled_speedup=$(awk "BEGIN {printf \"%.6f\", ($blocks * $T1_WEAK) / $avg_time}")
