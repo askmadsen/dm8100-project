@@ -5,3 +5,4 @@
 void matmul_openmp(Matrix a, Matrix b, Matrix c);
 void matmul_openmp_transposed(Matrix a, Matrix b, Matrix c);
 void matmul_openmp_chunks(Matrix a, Matrix b, Matrix c, int threshold);
+void matmul_openmp_blocks(Matrix a, Matrix b, Matrix c);

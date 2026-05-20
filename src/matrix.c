@@ -97,18 +97,34 @@ int matrix_load(Matrix* m, char* file_path) {
     return 0;
 }
 
+Matrix up_at(Matrix m, int i) {
+    return (Matrix) { m.ptr, i, m.cols, m.stride };
+}
+
+Matrix down_at(Matrix m, int i) {
+    return (Matrix) { m.ptr + i * m.stride, m.rows - i, m.cols, m.stride };
+}
+
+Matrix left_at(Matrix m, int j) {
+    return (Matrix) { m.ptr, m.rows, j, m.stride };
+}
+
+Matrix right_at(Matrix m, int j) {
+    return (Matrix) { m.ptr + j, m.rows, m.cols - j, m.stride };
+}
+
 Matrix up(Matrix m) {
-    return (Matrix) { m.ptr, m.rows / 2, m.cols, m.stride };
+    return up_at(m, m.rows / 2);
 }
 
 Matrix down(Matrix m) {
-    return (Matrix) { m.ptr + m.rows / 2 * m.stride, m.rows - m.rows / 2, m.cols, m.stride };
+    return down_at(m, m.rows / 2);
 }
 
 Matrix left(Matrix m) {
-    return (Matrix) { m.ptr, m.rows, m.cols / 2, m.stride };
+    return left_at(m, m.cols / 2);
 }
 
 Matrix right(Matrix m) {
-    return (Matrix) { m.ptr + m.cols / 2, m.rows, m.cols - m.cols / 2, m.stride };
+    return right_at(m, m.cols / 2);
 }

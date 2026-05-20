@@ -42,6 +42,11 @@ int matrix_save(Matrix m, char* file_path);
 
 int matrix_load(Matrix* m, char* file_path);
 
+Matrix up_at(Matrix m, int i);
+Matrix down_at(Matrix m, int i);
+Matrix left_at(Matrix m, int j);
+Matrix right_at(Matrix m, int j);
+
 Matrix up(Matrix m);
 Matrix down(Matrix m);
 Matrix left(Matrix m);

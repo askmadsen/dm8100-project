@@ -1,9 +1,10 @@
-CC       := gcc
-MPICC    := mpicc
-NVCC 	 := nvcc
-FLAGS    := -Wall -Wextra -O3 -march=native
-NVFLAGS  := -O3 -use_fast_math
-OMPFLAGS := -fopenmp
+CC        := gcc
+MPICC     := mpicc
+NVCC 	  := nvcc
+FLAGS     := -Wall -Wextra -O3 -march=native
+LINKFLAGS := 
+NVFLAGS   := -O3 -use_fast_math
+OMPFLAGS  := -fopenmp
 
 SHARED = obj/matrix.o obj/arg_parser.o
 
@@ -13,19 +14,19 @@ all_except_cuda: target/main_serial target/main_openmp target/main_correctness t
 
 # Executables
 target/main_serial: obj/main_serial.o $(SHARED) obj/serial.o | target
-	$(CC) $^ -lm -o $@
+	$(CC) $^ -lm $(LINKFLAGS) -o $@
 
 target/main_openmp: obj/main_openmp.o $(SHARED) obj/openmp.o obj/serial.o | target
-	$(CC) $^ -lm $(OMPFLAGS) -o $@
+	$(CC) $^ -lm $(LINKFLAGS) $(OMPFLAGS) -o $@
 
 target/main_correctness: obj/main_correctness.o $(SHARED) obj/serial.o obj/openmp.o | target
-	$(CC) $^ -lm $(OMPFLAGS) -o $@
+	$(CC) $^ -lm $(LINKFLAGS) $(OMPFLAGS) -o $@
 
 target/main_openmpi: obj/main_openmpi.o $(SHARED) obj/serial.o | target
-	$(MPICC) $^ -lm -o $@
+	$(MPICC) $^ -lm $(LINKFLAGS) -o $@
 
 target/main_cuda: $(SHARED) obj/cuda.o obj/main_cuda.o | target
-	$(NVCC) $^ -lm -o $@
+	$(NVCC) $^ -lm $(LINKFLAGS) -o $@
 
 # Object files
 obj/openmp.o: src/openmp.c | obj
