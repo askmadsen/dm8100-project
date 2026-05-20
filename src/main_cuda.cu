@@ -27,9 +27,7 @@ int parse_args(int argc, char** argv, int* dim, int* threads, int* blocks, int* 
     return 0;
 }
 
-//
-// --dest <PATH>
-// --output <MODE>
+
 int main(int argc, char** argv) {
     int device;
     struct cudaDeviceProp prop;
@@ -47,7 +45,7 @@ int main(int argc, char** argv) {
     int blocks = prop.multiProcessorCount;
     int chunk_size = 4;
     char* dest = NULL;
-    const char* alg = "matmul_cuda_chunks";
+    const char* alg = "blocks";
 
     parse_args(argc, argv, &dim, &threads, &blocks, &chunk_size, &dest, &alg);
 
@@ -91,13 +89,13 @@ int main(int argc, char** argv) {
     } else if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_cuda_transposed")) {
         matrix_transpose(b);
         matmul_cuda_transposed<<<blocks, threads>>>(a_dev, b_dev, c_dev);
-    } else if (!strcmp(alg, "chunks2")) {
+    } else if (!strcmp(alg, "blocks") || !strcmp(alg, "matmul_cuda_blocks")) {
         dim3 block(TILE, TILE);
         dim3 grid(
             (dim + TILE - 1) / TILE,
             (dim + TILE - 1) / TILE
         );
-        matmul_cuda_chunks2<<<grid, block>>>(a_dev, b_dev, c_dev);
+        matmul_cuda_blocks<<<grid, block>>>(a_dev, b_dev, c_dev);
     } else {
         fprintf(stderr, "Matmul algorithm %s is not implemented \n", alg);
         return -1;

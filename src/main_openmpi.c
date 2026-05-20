@@ -30,6 +30,8 @@ int parse_args(int argc, char** argv, int* d, char** dest, int* chunk_size) {
     return 0;
 }
 
+// Orchestrator process that divides the matrix multiplication work into chunks and distributes them to worker processes,
+// then collects the results and assembles the final matrix.
 int main_orchestrator(int argc, char** argv) {
     int d;
     char* dest = NULL;
@@ -37,7 +39,7 @@ int main_orchestrator(int argc, char** argv) {
     parse_args(argc, argv, &d, &dest, &chunk_size);
     int chunk_entries = chunk_size * chunk_size;
     int chunk_count = d * d / chunk_entries;
-    
+
     int size;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     int worker_count = size - 1;
@@ -115,8 +117,10 @@ int main_orchestrator(int argc, char** argv) {
     return 0;
 }
 
+// Worker process that receives chunks of the input matrices, performs the matrix multiplication for that chunk,
+// and sends the result back to the orchestrator.
 int main_worker(void) {
-    int d; 
+    int d;
 
     MPI_Bcast(&d, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -160,6 +164,8 @@ int main(int argc, char** argv) {
     }
 }
 
+// Converts a linear chunk index into a MatrixChunk struct that defines the row and column range for that chunk,
+// based on the total dimensions of the matrix and the desired chunk size.
 MatrixChunk chunk_from_index(int i, int rows, int cols, int chunk_size) {
     int row = i * chunk_size / rows * chunk_size;
     int col = i * chunk_size % rows;
