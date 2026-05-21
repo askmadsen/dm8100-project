@@ -50,8 +50,8 @@ int main(int argc, char **argv) {
     } else if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_openmp_transposed")) {
         matrix_transpose(b);
         matmul_openmp_transposed(a, b, c);
-    } else if (!strcmp(alg, "chunks") || !strcmp(alg, "matmul_openmp_chunks")) {
-        matmul_openmp_chunks(a, b, c, threshold);
+    } else if (!strcmp(alg, "recursive") || !strcmp(alg, "matmul_openmp_recursive")) {
+        matmul_openmp_recursive(a, b, c, threshold);
     } else if (!strcmp(alg, "blocks") || !strcmp(alg, "matmul_openmp_blocks")) {
         matmul_openmp_blocks(a, b, c);
     } else {

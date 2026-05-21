@@ -24,7 +24,7 @@ int parse_args(int argc, char** argv, int* dim, char** dest, const char** alg, i
 int main(int argc, char **argv) {
     int dim;
     char* dest = NULL;
-    const char* alg = "chunks";
+    const char* alg = "recursive";
     int threshold = 1024;
 
     CONTEXT(
@@ -46,8 +46,8 @@ int main(int argc, char **argv) {
     } else if (!strcmp(alg, "transposed") || !strcmp(alg, "matmul_transposed")) {
         matrix_transpose(b);
         matmul_transposed(a, b, c);
-    } else if (!strcmp(alg, "chunks") || !strcmp(alg, "matmul_chunks")) {
-        matmul_chunks(a, b, c, threshold);
+    } else if (!strcmp(alg, "recursive") || !strcmp(alg, "matmul_recursive")) {
+        matmul_recursive(a, b, c, threshold);
     } else {
         fprintf(stderr, "Error: No algorithm named %s\n", alg);
         return 1;

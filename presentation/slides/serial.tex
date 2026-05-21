@@ -65,7 +65,7 @@
         
         \begin{column}{0.50\textwidth}
              \begin{center}
-                \includegraphics[width=0.95\textwidth]{Images/matmul_chunks.png}
+                \includegraphics[width=0.95\textwidth]{Images/matmul_recursive.png}
             \end{center}
         \end{column}
     \end{columns}
@@ -86,7 +86,7 @@
         IJK Loop          & 6.11 s        & 61.28 s       & ---           & ---      \\
         Transposed        & 0.65 s        & 5.48 s        & 47.31 s       & ---      \\
         IKJ Loop          & 0.14 s        & 2.08 s        & 15.73 s       & 140.13 s \\
-        Chunks            & 0.08 s        & 0.64 s        & 5.51 s        & 48.72  s \\
+        Recursive         & 0.08 s        & 0.64 s        & 5.51 s        & 48.72  s \\
         \bottomrule
     \end{tabular}
     \caption{Execution times for different serial matrix multiplication algorithms, averaged over 3 consecutive runs.}

@@ -14,4 +14,4 @@ void matmul_transposed(Matrix a, Matrix bT, Matrix c);
 // Performs matrix multiplication in a recursive divide-and-conquer manner,
 // each recursion creating 8 subproblems until the subproblems fall within the threshold,
 // where the base case uses the simple matmul_ikj algorithm.
-void matmul_chunks(Matrix a, Matrix b, Matrix c, int threshold);
+void matmul_recursive(Matrix a, Matrix b, Matrix c, int threshold);

@@ -38,7 +38,7 @@ void matmul_transposed(Matrix a, Matrix bT, Matrix c) {
     }
 }
 
-void matmul_chunks(Matrix a, Matrix b, Matrix c, int threshold) {
+void matmul_recursive(Matrix a, Matrix b, Matrix c, int threshold) {
     if (a.rows + b.rows + c.cols <= threshold) {
         matmul_ikj(a, b, c);
     } else {
@@ -55,13 +55,13 @@ void matmul_chunks(Matrix a, Matrix b, Matrix c, int threshold) {
         Matrix c3 = down(left(c));
         Matrix c4 = down(right(c));
 
-        matmul_chunks(a1, b1, c1, threshold);
-        matmul_chunks(a2, b3, c1, threshold);
-        matmul_chunks(a1, b2, c2, threshold);
-        matmul_chunks(a2, b4, c2, threshold);
-        matmul_chunks(a3, b1, c3, threshold);
-        matmul_chunks(a4, b3, c3, threshold);
-        matmul_chunks(a3, b2, c4, threshold);
-        matmul_chunks(a4, b4, c4, threshold);
+        matmul_recursive(a1, b1, c1, threshold);
+        matmul_recursive(a2, b3, c1, threshold);
+        matmul_recursive(a1, b2, c2, threshold);
+        matmul_recursive(a2, b4, c2, threshold);
+        matmul_recursive(a3, b1, c3, threshold);
+        matmul_recursive(a4, b3, c3, threshold);
+        matmul_recursive(a3, b2, c4, threshold);
+        matmul_recursive(a4, b4, c4, threshold);
     }
 }
