@@ -1,5 +1,8 @@
 #!/bin/bash
+rm -f dm8100-project.zip
+
 zip -r dm8100-project.zip \
+    Makefile \
     presentation/presentation.pdf \
     src \
     scripts/correctness.sh \
