@@ -54,8 +54,8 @@
             
            \begin{itemize}
             \item Splits the problem into 8 subproblems.
-            \item Theoretically cache optimal.
             \item Threshold stops recursion.
+            \item Theoretically cache optimal.
            \end{itemize}
             
         \end{column}
@@ -84,7 +84,6 @@
         \textbf{Algorithm Variant} & \textbf{1024} & \textbf{2048} & \textbf{4096} & \textbf{8192} \\
         \midrule
         IJK Loop          & 6.11 s        & 61.28 s       & ---           & ---      \\
-        Transposed        & 0.65 s        & 5.48 s        & 47.31 s       & ---      \\
         IKJ Loop          & 0.14 s        & 2.08 s        & 15.73 s       & 140.13 s \\
         Recursive         & 0.08 s        & 0.64 s        & 5.51 s        & 48.72  s \\
         \bottomrule
